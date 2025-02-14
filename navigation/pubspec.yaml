@@ -13,8 +13,13 @@ dependencies:
     path: ../core
   core_ui:
     path: ../core_ui
+
+  dashboard:
+    path: ../features/dashboard
   character_list:
     path: ../features/character_list
+  favorites:
+    path: ../features/favorites
 
   auto_route: ^9.2.2
 

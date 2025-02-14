@@ -1,12 +1,12 @@
-library character_list;
+library favorites;
 
 import 'package:navigation/navigation.dart';
 
-export 'character_list.gr.dart';
+export 'favorites.gr.dart';
 
 @AutoRouterConfig()
 // ignore: unused_element
-class _CharacterListRouter extends RootStackRouter {
+class _FavoritesRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => throw UnimplementedError();
 }

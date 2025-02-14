@@ -1,12 +1,12 @@
-library character_list;
+library dashboard;
 
 import 'package:navigation/navigation.dart';
 
-export 'character_list.gr.dart';
+export 'dashboard.gr.dart';
 
 @AutoRouterConfig()
 // ignore: unused_element
-class _CharacterListRouter extends RootStackRouter {
+class _DashboardRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => throw UnimplementedError();
 }
