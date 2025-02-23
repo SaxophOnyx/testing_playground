@@ -16,10 +16,12 @@ dependencies:
 
   dashboard:
     path: ../features/dashboard
-  character_list:
-    path: ../features/character_list
-  favorites:
-    path: ../features/favorites
+  medications:
+    path: ../features/medications
+  prescriptions:
+    path: ../features/prescriptions
+  add_medication:
+    path: ../features/add_medication
 
   auto_route: ^9.2.2
 

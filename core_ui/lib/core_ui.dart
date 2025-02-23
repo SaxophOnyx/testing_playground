@@ -1,6 +1,6 @@
 library core_ui;
 
-export 'package:cached_network_image/cached_network_image.dart';
+export 'package:date_input_formatter/date_input_formatter.dart';
 
 export 'src/theme/theme.dart';
 export 'src/widgets/widgets.dart';

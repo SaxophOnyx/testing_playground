@@ -13,9 +13,8 @@ dependencies:
   core:
     path: ../core
 
-  flutter_svg: ^2.0.9
   flex_color_scheme: ^8.0.2
-  cached_network_image: ^3.4.1
+  date_input_formatter: ^0.0.1
 
 dev_dependencies:
   flutter_test:

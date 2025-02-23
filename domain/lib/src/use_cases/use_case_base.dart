@@ -1,15 +1,11 @@
-abstract class UseCase<Input, Output> {
-  Output execute(Input input);
+abstract interface class UseCase<Input, Output> {
+  Output execute(Input payload);
 }
 
-abstract class FutureUseCase<Input, Output> {
-  Future<Output> execute(Input input);
+abstract interface class FutureUseCase<Input, Output> {
+  Future<Output> execute(Input payload);
 }
 
-abstract class StreamUseCase<Input, Output> {
-  Stream<Output> execute(Input input);
-}
-
-final class NoParams {
-  const NoParams();
+abstract interface class StreamUseCase<Input, Output> {
+  Stream<Output> execute(Input payload);
 }
