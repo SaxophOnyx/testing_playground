@@ -11,3 +11,7 @@ final class Initialize extends MedicationsEvent {
 final class AddMedication extends MedicationsEvent {
   const AddMedication();
 }
+
+final class UseMedication extends MedicationsEvent {
+  const UseMedication();
+}

@@ -14,7 +14,6 @@ part 'app_database.g.dart';
 @DriftDatabase(tables: <Type>[
   MedicationTable,
   StoredMedicationTable,
-  PrescriptionTable,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());

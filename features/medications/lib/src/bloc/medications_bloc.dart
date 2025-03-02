@@ -20,6 +20,7 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
         super(const MedicationsState.initial()) {
     on<Initialize>(_onInitialize);
     on<AddMedication>(_onAddMedication);
+    on<UseMedication>(_onUseMedication);
   }
 
   Future<void> _onInitialize(
@@ -77,4 +78,9 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
       );
     }
   }
+
+  Future<void> _onUseMedication(
+    UseMedication event,
+    Emitter<MedicationsState> emit,
+  ) async {}
 }

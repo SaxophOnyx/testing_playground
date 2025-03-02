@@ -21,11 +21,5 @@ final class DataDI {
         appDatabase: locator<AppDatabase>(),
       ),
     );
-
-    locator.registerLazySingleton<PrescriptionRepository>(
-      () => PrescriptionRepositoryImpl(
-        appDatabase: locator<AppDatabase>(),
-      ),
-    );
   }
 }

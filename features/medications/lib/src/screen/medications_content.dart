@@ -5,7 +5,6 @@ import 'package:domain/src/models/stored_medication.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../medications.dart';
 import '../bloc/medications_bloc.dart';
 import '../widgets/stored_medication_card.dart';
 
@@ -20,9 +19,9 @@ class MedicationsContent extends StatelessWidget {
       builder: (BuildContext context, MedicationsState state) {
         return Scaffold(
           body: CustomScrollView(
-            physics: state.isLoading
-                ? const NeverScrollableScrollPhysics()
-                : const ClampingScrollPhysics(),
+            physics: state.storedMedications.isNotEmpty
+                ? const ClampingScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
             slivers: <Widget>[
               const SliverAppBar.medium(title: Text('Medications')),
               const SliverSizedBox(height: AppDimens.pageGap),
@@ -38,7 +37,7 @@ class MedicationsContent extends StatelessWidget {
 
                       return StoredMedicationCard(
                         name: medication.name,
-                        quantity: stored.availableQuantity,
+                        quantity: stored.quantity,
                         expiresAt: stored.expiresAt,
                       );
                     },
@@ -61,13 +60,30 @@ class MedicationsContent extends StatelessWidget {
           ),
           floatingActionButton: Visibility(
             visible: !(state.isLoading || state.hasError),
-            child: FloatingActionButton(
-              heroTag: MedicationsRoute.name,
-              onPressed: () => bloc.add(const AddMedication()),
-              child: const Icon(Icons.add),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                FloatingActionButton(
+                  heroTag: null,
+                  onPressed: () => bloc.add(const AddMedication()),
+                  child: const Icon(Icons.add),
+                ),
+                Visibility(
+                  visible: state.storedMedications.isNotEmpty,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: AppDimens.pageGap),
+                    child: FloatingActionButton(
+                      heroTag: null,
+                      onPressed: () => bloc.add(const UseMedication()),
+                      child: const Icon(Icons.remove),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );
       },
     );

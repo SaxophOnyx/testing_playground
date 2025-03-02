@@ -1,4 +1,4 @@
-import '../../../domain.dart';
+import '../../domain.dart';
 
 final class AddStoredMedicationPayload {
   final String medicationName;
@@ -32,8 +32,9 @@ final class AddStoredMedicationUseCase
 
   @override
   Future<AddStoredMedicationResult> execute(AddStoredMedicationPayload payload) async {
-    final Medication medication = await _medicationRepository.ensureMedicationCreated(
+    final Medication medication = await _medicationRepository.fetchMedication(
       name: payload.medicationName,
+      createIfNotFound: true,
     );
 
     final StoredMedication storedMedication = await _medicationRepository.addStoredMedication(

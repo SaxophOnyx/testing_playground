@@ -1,4 +1,4 @@
-import '../../../domain.dart';
+import '../../domain.dart';
 
 final class FetchMedicationsUseCase implements FutureUseCase<void, List<Medication>> {
   final MedicationRepository _medicationRepository;

@@ -5,11 +5,14 @@ abstract interface class MedicationRepository {
 
   Future<List<StoredMedication>> fetchStoredMedications({
     DateTime? minExpirationDate,
-    String? medicationName,
+    int? medicationId,
     int? minQuantity,
   });
 
-  Future<Medication> ensureMedicationCreated({required String name});
+  Future<Medication> fetchMedication({
+    required String name,
+    required bool createIfNotFound,
+  });
 
   Future<StoredMedication> addStoredMedication({
     required int medicationId,
@@ -17,20 +20,10 @@ abstract interface class MedicationRepository {
     required DateTime expiresAt,
   });
 
-  Future<void> removeStoredMedication({required int id});
+  Future<void> deleteStoredMedication({required int id});
 
-  Future<void> reserveStoredMedication({
-    required int id,
-    required int quantity,
-  });
-
-  Future<void> consumeStoredMedication({
-    required int id,
-    required int quantity,
-  });
-
-  Future<void> releaseStoredMedication({
-    required int id,
-    required int quantity,
+  Future<StoredMedication> adjustStoredMedicationQuantity({
+    required int storedMedicationId,
+    required int quantityChange,
   });
 }

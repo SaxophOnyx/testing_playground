@@ -9,8 +9,8 @@ final class StoredMedicationMapper {
     return StoredMedication(
       id: entity.id,
       medicationId: entity.medicationId,
-      availableQuantity: entity.availableQuantity,
-      reservedQuantity: entity.reservedQuantity,
+      quantity: entity.quantity,
+      initialQuantity: entity.initialQuantity,
       expiresAt: entity.expiresAt,
     );
   }

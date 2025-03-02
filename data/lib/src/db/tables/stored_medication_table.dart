@@ -5,9 +5,9 @@ class StoredMedicationTable extends Table {
 
   IntColumn get medicationId => integer().references(MedicationTable, #id)();
 
-  IntColumn get availableQuantity => integer()();
+  IntColumn get quantity => integer()();
 
-  IntColumn get reservedQuantity => integer()();
+  IntColumn get initialQuantity => integer()();
 
   DateTimeColumn get expiresAt => dateTime()();
 }

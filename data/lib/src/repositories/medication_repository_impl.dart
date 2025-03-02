@@ -21,31 +21,46 @@ final class MedicationRepositoryImpl implements MedicationRepository {
           StoredMedicationTableCompanion.insert(
             medicationId: medicationId,
             expiresAt: expiresAt,
-            availableQuantity: quantity,
-            reservedQuantity: 0,
+            initialQuantity: quantity,
+            quantity: quantity,
           ),
         );
 
     return StoredMedication(
       id: id,
       medicationId: medicationId,
-      availableQuantity: quantity,
-      reservedQuantity: 0,
+      quantity: quantity,
+      initialQuantity: quantity,
       expiresAt: expiresAt,
     );
   }
 
   @override
-  Future<Medication> ensureMedicationCreated({required String name}) async {
-    final int id = await _appDatabase.into(_appDatabase.medicationTable).insert(
-          MedicationTableCompanion.insert(name: name),
-          mode: InsertMode.insertOrIgnore,
-        );
-
-    return Medication(
-      id: id,
-      name: name,
+  Future<StoredMedication> adjustStoredMedicationQuantity({
+    required int storedMedicationId,
+    required int quantityChange,
+  }) async {
+    await (_appDatabase.update(_appDatabase.storedMedicationTable)
+          ..where(($StoredMedicationTableTable row) => row.id.equals(storedMedicationId)))
+        .write(
+      StoredMedicationTableCompanion.custom(
+        quantity: _appDatabase.storedMedicationTable.quantity - Variable<int>(quantityChange),
+      ),
     );
+
+    final StoredMedicationTableData entity =
+        await (_appDatabase.select(_appDatabase.storedMedicationTable)
+              ..where(($StoredMedicationTableTable row) => row.id.equals(storedMedicationId)))
+            .getSingle();
+
+    return StoredMedicationMapper.fromEntity(entity);
+  }
+
+  @override
+  Future<void> deleteStoredMedication({required int id}) async {
+    await (_appDatabase.delete(_appDatabase.storedMedicationTable)
+          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
+        .go();
   }
 
   @override
@@ -59,76 +74,49 @@ final class MedicationRepositoryImpl implements MedicationRepository {
   }
 
   @override
+  Future<Medication> fetchMedication({
+    required String name,
+    bool createIfNotFound = false,
+  }) async {
+    final int id = await _appDatabase.into(_appDatabase.medicationTable).insert(
+          MedicationTableCompanion.insert(name: name),
+          mode: createIfNotFound ? InsertMode.insertOrIgnore : InsertMode.insertOrAbort,
+        );
+
+    return Medication(
+      id: id,
+      name: name,
+    );
+  }
+
+  @override
   Future<List<StoredMedication>> fetchStoredMedications({
     DateTime? minExpirationDate,
-    String? medicationName,
+    int? medicationId,
     int? minQuantity,
   }) async {
-    final List<StoredMedicationTableData> entities =
-        await (_appDatabase.select(_appDatabase.storedMedicationTable)
-              ..orderBy(
-                <OrderClauseGenerator<$StoredMedicationTableTable>>[
-                  ($StoredMedicationTableTable t) => OrderingTerm(expression: t.expiresAt)
-                ],
-              ))
-            .get();
+    final SimpleSelectStatement<$StoredMedicationTableTable, StoredMedicationTableData> query =
+        _appDatabase.select(_appDatabase.storedMedicationTable);
+
+    if (medicationId != null) {
+      query.where(($StoredMedicationTableTable t) => t.medicationId.equals(medicationId));
+    }
+
+    if (minQuantity != null) {
+      query.where(($StoredMedicationTableTable t) => t.quantity.isBiggerOrEqualValue(minQuantity));
+    }
+
+    if (minExpirationDate != null) {
+      query.where(
+          ($StoredMedicationTableTable t) => t.expiresAt.isSmallerOrEqualValue(minExpirationDate));
+    }
+
+    query.orderBy(<OrderClauseGenerator<$StoredMedicationTableTable>>[
+      ($StoredMedicationTableTable t) => OrderingTerm(expression: t.expiresAt),
+    ]);
+
+    final List<StoredMedicationTableData> entities = await query.get();
 
     return entities.mapList(StoredMedicationMapper.fromEntity);
-  }
-
-  @override
-  Future<void> removeStoredMedication({required int id}) async {
-    await (_appDatabase.delete(_appDatabase.storedMedicationTable)
-          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
-        .go();
-  }
-
-  @override
-  Future<void> consumeStoredMedication({
-    required int id,
-    required int quantity,
-  }) async {
-    await (_appDatabase.update(_appDatabase.storedMedicationTable)
-          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
-        .write(
-      StoredMedicationTableCompanion.custom(
-        reservedQuantity:
-            _appDatabase.storedMedicationTable.reservedQuantity - Variable<int>(quantity),
-      ),
-    );
-  }
-
-  @override
-  Future<void> releaseStoredMedication({
-    required int id,
-    required int quantity,
-  }) async {
-    await (_appDatabase.update(_appDatabase.storedMedicationTable)
-          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
-        .write(
-      StoredMedicationTableCompanion.custom(
-        reservedQuantity:
-            _appDatabase.storedMedicationTable.reservedQuantity - Variable<int>(quantity),
-        availableQuantity:
-            _appDatabase.storedMedicationTable.reservedQuantity + Variable<int>(quantity),
-      ),
-    );
-  }
-
-  @override
-  Future<void> reserveStoredMedication({
-    required int id,
-    required int quantity,
-  }) async {
-    await (_appDatabase.update(_appDatabase.storedMedicationTable)
-          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
-        .write(
-      StoredMedicationTableCompanion.custom(
-        reservedQuantity:
-            _appDatabase.storedMedicationTable.reservedQuantity + Variable<int>(quantity),
-        availableQuantity:
-            _appDatabase.storedMedicationTable.reservedQuantity - Variable<int>(quantity),
-      ),
-    );
   }
 }
