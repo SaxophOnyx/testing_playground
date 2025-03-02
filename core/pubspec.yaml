@@ -13,7 +13,6 @@ dependencies:
 
   get_it: ^7.6.7
   flutter_bloc: ^8.1.4
-  observe_internet_connectivity: ^1.0.2
   http: ^1.2.1
   easy_localization: ^3.0.7
 

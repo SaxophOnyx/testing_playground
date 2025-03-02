@@ -22,6 +22,8 @@ dependencies:
     path: ../features/prescriptions
   add_medication:
     path: ../features/add_medication
+  add_prescription:
+    path: ../features/add_prescription
 
   auto_route: ^9.2.2
 

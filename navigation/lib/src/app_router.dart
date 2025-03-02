@@ -19,7 +19,13 @@ class AppRouter extends RootStackRouter {
         ),
         CustomRoute<void>(
           page: AddMedicationRoute.page,
-          customRouteBuilder: AppRouteBuilders.dismissibleDialog,
+          durationInMilliseconds: 250,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
+        ),
+        CustomRoute<void>(
+          page: AddPrescriptionRoute.page,
+          durationInMilliseconds: 250,
+          transitionsBuilder: TransitionsBuilders.slideLeft,
         ),
       ];
 }

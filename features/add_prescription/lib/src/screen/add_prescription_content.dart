@@ -1,37 +1,37 @@
 import 'package:core/core.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/services/text_formatter.dart';
+import 'package:flutter/services.dart';
 
-import '../bloc/add_medication_bloc.dart';
+import '../bloc/add_prescription_bloc.dart';
 
-class AddMedicationContent extends StatelessWidget {
-  const AddMedicationContent({super.key});
+class AddPrescriptionContent extends StatelessWidget {
+  const AddPrescriptionContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AddMedicationBloc bloc = context.read<AddMedicationBloc>();
+    final AddPrescriptionBloc bloc = context.read<AddPrescriptionBloc>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Medication'),
+        title: const Text('New Prescription'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppDimens.defaultPagePadding),
-        child: BlocBuilder<AddMedicationBloc, AddMedicationState>(
-          builder: (BuildContext context, AddMedicationState state) {
+        child: BlocBuilder<AddPrescriptionBloc, AddPrescriptionState>(
+          builder: (BuildContext context, AddPrescriptionState state) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 TextField(
-                  onChanged: (String text) => bloc.add(UpdateInput(name: text)),
+                  onChanged: (String text) => bloc.add(UpdateInput(medicationName: text)),
                   keyboardType: TextInputType.name,
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.singleLineFormatter,
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Name',
-                    errorText: state.nameError,
+                    labelText: 'Medication name',
+                    errorText: state.medicationNameError,
                   ),
                 ),
                 const SizedBox(height: AppDimens.defaultPagePadding),
@@ -48,7 +48,7 @@ class AddMedicationContent extends StatelessWidget {
                 ),
                 const SizedBox(height: AppDimens.defaultPagePadding),
                 TextField(
-                  onChanged: (String text) => bloc.add(UpdateInput(expiresAt: text)),
+                  onChanged: (String text) => bloc.add(UpdateInput(dateTime: text)),
                   enableInteractiveSelection: false,
                   keyboardType: TextInputType.datetime,
                   inputFormatters: <TextInputFormatter>[
@@ -56,15 +56,15 @@ class AddMedicationContent extends StatelessWidget {
                     DateInputFormatter(),
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Expires at',
+                    labelText: 'Date',
                     hintText: '--/--/----',
-                    errorText: state.expiresAtError,
+                    errorText: state.dateTimeError,
                   ),
                 ),
                 const Spacer(),
                 FilledButton(
                   onPressed: state.hasError ? null : () => bloc.add(const SubmitInput()),
-                  child: const Text('Add medication'),
+                  child: const Text('Add prescription'),
                 ),
                 const SizedBox(height: AppDimens.defaultPagePadding),
               ],

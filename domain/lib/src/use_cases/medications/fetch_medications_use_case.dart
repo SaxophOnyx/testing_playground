@@ -1,6 +1,6 @@
-import '../../domain.dart';
+import '../../../domain.dart';
 
-final class FetchMedicationsUseCase implements FutureUseCase<void, Map<int, Medication>> {
+final class FetchMedicationsUseCase implements FutureUseCase<void, List<Medication>> {
   final MedicationRepository _medicationRepository;
 
   const FetchMedicationsUseCase({
@@ -8,7 +8,7 @@ final class FetchMedicationsUseCase implements FutureUseCase<void, Map<int, Medi
   }) : _medicationRepository = medicationRepository;
 
   @override
-  Future<Map<int, Medication>> execute([void payload]) {
+  Future<List<Medication>> execute([void payload]) {
     return _medicationRepository.fetchMedications();
   }
 }

@@ -20,38 +20,50 @@ final class MedicationRepositoryImpl implements MedicationRepository {
     final int id = await _appDatabase.into(_appDatabase.storedMedicationTable).insert(
           StoredMedicationTableCompanion.insert(
             medicationId: medicationId,
-            quantity: quantity,
             expiresAt: expiresAt,
+            availableQuantity: quantity,
+            reservedQuantity: 0,
           ),
         );
 
     return StoredMedication(
       id: id,
       medicationId: medicationId,
-      quantity: quantity,
+      availableQuantity: quantity,
+      reservedQuantity: 0,
       expiresAt: expiresAt,
     );
   }
 
   @override
-  Future<Map<int, Medication>> fetchMedications() async {
-    final List<MedicationTableData> entities =
-        await _appDatabase.select(_appDatabase.medicationTable).get();
+  Future<Medication> ensureMedicationCreated({required String name}) async {
+    final int id = await _appDatabase.into(_appDatabase.medicationTable).insert(
+          MedicationTableCompanion.insert(name: name),
+          mode: InsertMode.insertOrIgnore,
+        );
 
-    final Map<int, Medication> map = <int, Medication>{
-      for (final MedicationTableData entity in entities)
-        entity.id: Medication(
-          id: entity.id,
-          name: entity.name,
-          isSplittable: entity.isSplittable,
-        ),
-    };
-
-    return map;
+    return Medication(
+      id: id,
+      name: name,
+    );
   }
 
   @override
-  Future<List<StoredMedication>> fetchStoredMedications() async {
+  Future<List<Medication>> fetchMedications() async {
+    final List<MedicationTableData> entities =
+        await _appDatabase.select(_appDatabase.medicationTable).get();
+
+    return entities.mapList(
+      (MedicationTableData item) => Medication(id: item.id, name: item.name),
+    );
+  }
+
+  @override
+  Future<List<StoredMedication>> fetchStoredMedications({
+    DateTime? minExpirationDate,
+    String? medicationName,
+    int? minQuantity,
+  }) async {
     final List<StoredMedicationTableData> entities =
         await (_appDatabase.select(_appDatabase.storedMedicationTable)
               ..orderBy(
@@ -65,22 +77,58 @@ final class MedicationRepositoryImpl implements MedicationRepository {
   }
 
   @override
-  Future<Medication> fetchOrCreateMedication({
-    required String name,
-  }) async {
-    final int id = await _appDatabase.into(_appDatabase.medicationTable).insert(
-          MedicationTableCompanion.insert(
-            name: name,
-            // TODO(SaxophOyx): Implement
-            isSplittable: false,
-          ),
-          mode: InsertMode.insertOrIgnore,
-        );
+  Future<void> removeStoredMedication({required int id}) async {
+    await (_appDatabase.delete(_appDatabase.storedMedicationTable)
+          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
+        .go();
+  }
 
-    return Medication(
-      id: id,
-      name: name,
-      isSplittable: false,
+  @override
+  Future<void> consumeStoredMedication({
+    required int id,
+    required int quantity,
+  }) async {
+    await (_appDatabase.update(_appDatabase.storedMedicationTable)
+          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
+        .write(
+      StoredMedicationTableCompanion.custom(
+        reservedQuantity:
+            _appDatabase.storedMedicationTable.reservedQuantity - Variable<int>(quantity),
+      ),
+    );
+  }
+
+  @override
+  Future<void> releaseStoredMedication({
+    required int id,
+    required int quantity,
+  }) async {
+    await (_appDatabase.update(_appDatabase.storedMedicationTable)
+          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
+        .write(
+      StoredMedicationTableCompanion.custom(
+        reservedQuantity:
+            _appDatabase.storedMedicationTable.reservedQuantity - Variable<int>(quantity),
+        availableQuantity:
+            _appDatabase.storedMedicationTable.reservedQuantity + Variable<int>(quantity),
+      ),
+    );
+  }
+
+  @override
+  Future<void> reserveStoredMedication({
+    required int id,
+    required int quantity,
+  }) async {
+    await (_appDatabase.update(_appDatabase.storedMedicationTable)
+          ..where(($StoredMedicationTableTable row) => row.id.equals(id)))
+        .write(
+      StoredMedicationTableCompanion.custom(
+        reservedQuantity:
+            _appDatabase.storedMedicationTable.reservedQuantity + Variable<int>(quantity),
+        availableQuantity:
+            _appDatabase.storedMedicationTable.reservedQuantity - Variable<int>(quantity),
+      ),
     );
   }
 }

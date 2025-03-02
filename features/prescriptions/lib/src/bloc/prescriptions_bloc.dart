@@ -2,41 +2,48 @@ import 'package:core/core.dart';
 import 'package:domain/domain.dart';
 import 'package:navigation/navigation.dart';
 
-part 'medications_event.dart';
-part 'medications_state.dart';
+part 'prescriptions_event.dart';
+part 'prescriptions_state.dart';
 
-class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
+class PrescriptionsBloc extends Bloc<PrescriptionsEvent, PrescriptionsState> {
   final AppRouter _appRouter;
   final FetchMedicationsUseCase _fetchMedicationsUseCase;
   final FetchStoredMedicationsUseCase _fetchStoredMedicationsUseCase;
+  final FetchPrescriptionsUseCase _fetchPrescriptionsUseCase;
 
-  MedicationsBloc({
+  PrescriptionsBloc({
     required AppRouter appRouter,
     required FetchMedicationsUseCase fetchMedicationsUseCase,
     required FetchStoredMedicationsUseCase fetchStoredMedicationsUseCase,
+    required FetchPrescriptionsUseCase fetchPrescriptionsUseCase,
   })  : _appRouter = appRouter,
         _fetchMedicationsUseCase = fetchMedicationsUseCase,
         _fetchStoredMedicationsUseCase = fetchStoredMedicationsUseCase,
-        super(const MedicationsState.initial()) {
+        _fetchPrescriptionsUseCase = fetchPrescriptionsUseCase,
+        super(const PrescriptionsState.initial()) {
     on<Initialize>(_onInitialize);
-    on<AddMedication>(_onAddMedication);
   }
 
   Future<void> _onInitialize(
     Initialize event,
-    Emitter<MedicationsState> emit,
+    Emitter<PrescriptionsState> emit,
   ) async {
     try {
       final List<Medication> medications = await _fetchMedicationsUseCase.execute();
       final List<StoredMedication> stored = await _fetchStoredMedicationsUseCase.execute();
+      final List<Prescription> prescriptions = await _fetchPrescriptionsUseCase.execute();
 
       emit(
         state.copyWith(
+          prescriptions: prescriptions,
           medications: medications.toMap(
             key: (Medication item) => item.id,
             value: (Medication item) => item,
           ),
-          storedMedications: stored,
+          storedMedications: stored.toMap(
+            key: (StoredMedication item) => item.id,
+            value: (StoredMedication item) => item,
+          ),
           isLoading: false,
         ),
       );
@@ -45,34 +52,6 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
         state.copyWith(
           hasError: true,
           isLoading: false,
-        ),
-      );
-    }
-  }
-
-  Future<void> _onAddMedication(
-    AddMedication event,
-    Emitter<MedicationsState> emit,
-  ) async {
-    final AddStoredMedicationResult? result = await _appRouter.push(const AddMedicationRoute());
-
-    if (result != null) {
-      final Map<int, Medication>? medications = state.medications.containsKey(result.medication.id)
-          ? null
-          : <int, Medication>{
-              ...state.medications,
-              result.medication.id: result.medication,
-            };
-
-      final List<StoredMedication> storedMedications = <StoredMedication>[
-        result.storedMedication,
-        ...state.storedMedications,
-      ]..sort((StoredMedication a, StoredMedication b) => a.expiresAt.compareTo(b.expiresAt));
-
-      emit(
-        state.copyWith(
-          medications: medications,
-          storedMedications: storedMedications,
         ),
       );
     }

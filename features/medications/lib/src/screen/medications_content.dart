@@ -22,6 +22,7 @@ class MedicationsContent extends StatelessWidget {
             slivers: <Widget>[
               const SliverAppBar(
                 centerTitle: true,
+                floating: true,
                 title: Text('Medications'),
               ),
               SliverVisibility(
@@ -43,7 +44,7 @@ class MedicationsContent extends StatelessWidget {
 
                       return StoredMedicationCard(
                         name: medication.name,
-                        quantity: stored.quantity,
+                        quantity: stored.availableQuantity,
                         expiresAt: stored.expiresAt,
                       );
                     },

@@ -1,19 +1,29 @@
-import '../../domain.dart';
+import '../../../domain.dart';
 
 final class AddStoredMedicationPayload {
   final String medicationName;
   final int quantity;
   final DateTime expiresAt;
 
-  AddStoredMedicationPayload({
+  const AddStoredMedicationPayload({
     required this.medicationName,
     required this.quantity,
     required this.expiresAt,
   });
 }
 
+final class AddStoredMedicationResult {
+  final Medication medication;
+  final StoredMedication storedMedication;
+
+  const AddStoredMedicationResult({
+    required this.medication,
+    required this.storedMedication,
+  });
+}
+
 final class AddStoredMedicationUseCase
-    implements FutureUseCase<AddStoredMedicationPayload, CreatedStoredMedication> {
+    implements FutureUseCase<AddStoredMedicationPayload, AddStoredMedicationResult> {
   final MedicationRepository _medicationRepository;
 
   const AddStoredMedicationUseCase({
@@ -21,9 +31,10 @@ final class AddStoredMedicationUseCase
   }) : _medicationRepository = medicationRepository;
 
   @override
-  Future<CreatedStoredMedication> execute(AddStoredMedicationPayload payload) async {
-    final Medication medication =
-        await _medicationRepository.fetchOrCreateMedication(name: payload.medicationName);
+  Future<AddStoredMedicationResult> execute(AddStoredMedicationPayload payload) async {
+    final Medication medication = await _medicationRepository.ensureMedicationCreated(
+      name: payload.medicationName,
+    );
 
     final StoredMedication storedMedication = await _medicationRepository.addStoredMedication(
       medicationId: medication.id,
@@ -31,9 +42,9 @@ final class AddStoredMedicationUseCase
       expiresAt: payload.expiresAt,
     );
 
-    return CreatedStoredMedication(
+    return AddStoredMedicationResult(
+      medication: medication,
       storedMedication: storedMedication,
-      associatedMedication: medication,
     );
   }
 }

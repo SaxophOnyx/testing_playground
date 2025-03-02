@@ -47,10 +47,9 @@ class AddMedicationBloc extends Bloc<AddMedicationEvent, AddMedicationState> {
     final int? quantity = int.tryParse(state.quantity);
     final DateTime? expiresAt = DateFormat('dd/MM/yyyy').tryParse(state.expiresAt);
 
-    final String? nameError = state.name.isNotEmpty ? null : 'Invalid name';
+    final String? nameError = ValidationService.validateName(state.name);
     final String? quantityError = quantity != null ? null : 'Invalid quantity';
-    final String? expiresAtError =
-        (expiresAt != null && expiresAt.isAfter(DateTime.now())) ? null : 'Invalid date';
+    final String? expiresAtError = ValidationService.validateDate(expiresAt);
 
     emit(
       state.copyWith(
@@ -63,7 +62,7 @@ class AddMedicationBloc extends Bloc<AddMedicationEvent, AddMedicationState> {
 
     if (!state.hasError) {
       try {
-        final CreatedStoredMedication medication = await _addStoredMedicationUseCase.execute(
+        final AddStoredMedicationResult medication = await _addStoredMedicationUseCase.execute(
           AddStoredMedicationPayload(
             medicationName: state.name,
             quantity: quantity!,
