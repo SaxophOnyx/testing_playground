@@ -10,20 +10,24 @@ class DashboardScreen extends StatelessWidget {
     return AutoTabsRouter.tabBar(
       physics: const NeverScrollableScrollPhysics(),
       builder: (BuildContext context, Widget child, TabController controller) {
+        final Color background = Theme.of(context).scaffoldBackgroundColor;
+
         return ColoredBox(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: background,
           child: Column(
             children: <Widget>[
               Expanded(child: child),
-              BottomNavigationBar(
-                currentIndex: controller.index,
-                onTap: controller.animateTo,
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
+              NavigationBar(
+                height: 42,
+                selectedIndex: controller.index,
+                onDestinationSelected: controller.animateTo,
+                backgroundColor: background,
+                destinations: const <NavigationDestination>[
+                  NavigationDestination(
                     icon: Icon(Icons.medical_services_outlined),
                     label: 'Medications',
                   ),
-                  BottomNavigationBarItem(
+                  NavigationDestination(
                     icon: Icon(Icons.calendar_month_outlined),
                     label: 'Prescriptions',
                   ),

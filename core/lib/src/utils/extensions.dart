@@ -31,3 +31,15 @@ extension ListExtension<T> on List<T> {
     };
   }
 }
+
+extension StringExtension on String {
+  Color toColor() {
+    final int hash = hashCode;
+
+    final int r = (hash & 0xFF0000) >> 16;
+    final int g = (hash & 0x00FF00) >> 8;
+    final int b = hash & 0x0000FF;
+
+    return Color.fromARGB(255, r, g, b);
+  }
+}

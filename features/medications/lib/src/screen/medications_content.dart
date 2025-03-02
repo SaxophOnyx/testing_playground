@@ -1,9 +1,11 @@
 import 'package:core/core.dart';
+import 'package:core_ui/core_ui.dart';
 import 'package:domain/src/models/medication.dart';
 import 'package:domain/src/models/stored_medication.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../medications.dart';
 import '../bloc/medications_bloc.dart';
 import '../widgets/stored_medication_card.dart';
 
@@ -18,29 +20,21 @@ class MedicationsContent extends StatelessWidget {
       builder: (BuildContext context, MedicationsState state) {
         return Scaffold(
           body: CustomScrollView(
-            physics: const ClampingScrollPhysics(),
+            physics: state.isLoading
+                ? const NeverScrollableScrollPhysics()
+                : const ClampingScrollPhysics(),
             slivers: <Widget>[
-              const SliverAppBar(
-                centerTitle: true,
-                floating: true,
-                title: Text('Medications'),
-              ),
-              SliverVisibility(
-                visible: !state.isLoading && state.storedMedications.isNotEmpty,
-                sliver: SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+              const SliverAppBar.medium(title: Text('Medications')),
+              const SliverSizedBox(height: AppDimens.pageGap),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: AppDimens.pagePaddingSmall),
+                sliver: SliverVisibility(
+                  visible: state.storedMedications.isNotEmpty,
                   sliver: SliverList.separated(
                     itemCount: state.storedMedications.length,
                     itemBuilder: (BuildContext context, int index) {
                       final StoredMedication stored = state.storedMedications[index];
-                      final Medication? maybeMedication = state.medications[stored.medicationId];
-
-                      assert(
-                        maybeMedication != null,
-                        'Medication with ID ${stored.medicationId} not found',
-                      );
-
-                      final Medication medication = maybeMedication!;
+                      final Medication medication = state.medications[stored.medicationId]!;
 
                       return StoredMedicationCard(
                         name: medication.name,
@@ -48,26 +42,32 @@ class MedicationsContent extends StatelessWidget {
                         expiresAt: stored.expiresAt,
                       );
                     },
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    separatorBuilder: (_, __) => const SizedBox(height: AppDimens.pageGap),
                   ),
-                ),
-                replacementSliver: SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(
-                    child: state.isLoading
-                        ? const CupertinoActivityIndicator()
-                        : Text(
-                            state.hasError ? 'Error while loading medications' : 'No medications',
-                          ),
+                  replacementSliver: SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: state.isLoading
+                          ? const CupertinoActivityIndicator()
+                          : state.hasError
+                              ? const Text('Error while loading medications')
+                              : const Text('No medications'),
+                    ),
                   ),
                 ),
               ),
+              const SliverSizedBox(height: AppDimens.pageGap),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => bloc.add(const AddMedication()),
-            child: const Icon(Icons.add),
+          floatingActionButton: Visibility(
+            visible: !(state.isLoading || state.hasError),
+            child: FloatingActionButton(
+              heroTag: MedicationsRoute.name,
+              onPressed: () => bloc.add(const AddMedication()),
+              child: const Icon(Icons.add),
+            ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         );
       },
     );

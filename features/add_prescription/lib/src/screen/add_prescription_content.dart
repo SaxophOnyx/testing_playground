@@ -17,7 +17,7 @@ class AddPrescriptionContent extends StatelessWidget {
         title: const Text('New Prescription'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(AppDimens.defaultPagePadding),
+        padding: const EdgeInsets.all(AppDimens.pagePaddingLarge),
         child: BlocBuilder<AddPrescriptionBloc, AddPrescriptionState>(
           builder: (BuildContext context, AddPrescriptionState state) {
             return Column(
@@ -34,7 +34,7 @@ class AddPrescriptionContent extends StatelessWidget {
                     errorText: state.medicationNameError,
                   ),
                 ),
-                const SizedBox(height: AppDimens.defaultPagePadding),
+                const SizedBox(height: AppDimens.pageGap),
                 TextField(
                   onChanged: (String text) => bloc.add(UpdateInput(quantity: text)),
                   keyboardType: TextInputType.number,
@@ -46,7 +46,7 @@ class AddPrescriptionContent extends StatelessWidget {
                     errorText: state.quantityError,
                   ),
                 ),
-                const SizedBox(height: AppDimens.defaultPagePadding),
+                const SizedBox(height: AppDimens.pageGap),
                 TextField(
                   onChanged: (String text) => bloc.add(UpdateInput(dateTime: text)),
                   enableInteractiveSelection: false,
@@ -66,7 +66,7 @@ class AddPrescriptionContent extends StatelessWidget {
                   onPressed: state.hasError ? null : () => bloc.add(const SubmitInput()),
                   child: const Text('Add prescription'),
                 ),
-                const SizedBox(height: AppDimens.defaultPagePadding),
+                const SizedBox(height: AppDimens.pagePaddingLarge),
               ],
             );
           },

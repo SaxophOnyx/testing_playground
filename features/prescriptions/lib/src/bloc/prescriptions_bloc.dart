@@ -22,6 +22,7 @@ class PrescriptionsBloc extends Bloc<PrescriptionsEvent, PrescriptionsState> {
         _fetchPrescriptionsUseCase = fetchPrescriptionsUseCase,
         super(const PrescriptionsState.initial()) {
     on<Initialize>(_onInitialize);
+    on<AddPrescription>(_onAddPrescription);
   }
 
   Future<void> _onInitialize(
@@ -55,5 +56,13 @@ class PrescriptionsBloc extends Bloc<PrescriptionsEvent, PrescriptionsState> {
         ),
       );
     }
+  }
+
+  Future<void> _onAddPrescription(
+    AddPrescription event,
+    Emitter<PrescriptionsState> emit,
+  ) async {
+    final Prescription? prescription = await _appRouter.push(const AddPrescriptionRoute());
+    if (prescription != null) {}
   }
 }

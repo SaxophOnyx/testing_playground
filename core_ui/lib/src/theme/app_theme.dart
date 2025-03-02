@@ -7,16 +7,18 @@ import '../../core_ui.dart';
 final class AppTheme {
   const AppTheme._();
 
-  static final ThemeData light = FlexThemeData.light(
-    scheme: FlexScheme.indigoM3,
+  static ThemeData light = FlexThemeData.light(
+    scheme: FlexScheme.redM3,
     subThemesData: const FlexSubThemesData(
       interactionEffects: true,
       tintedDisabledControls: true,
       useM2StyleDividerInM3: true,
-      defaultRadius: AppDimens.defaultBorderRadius,
-      inputDecoratorIsFilled: true,
-      inputDecoratorBorderType: FlexInputBorderType.outline,
+      defaultRadius: 8.0,
+      fabUseShape: true,
+      fabAlwaysCircular: true,
       alignedDropdown: true,
+      appBarBackgroundSchemeColor: SchemeColor.primary,
+      appBarCenterTitle: true,
       navigationRailUseIndicator: true,
       navigationRailLabelType: NavigationRailLabelType.all,
     ),
@@ -25,17 +27,18 @@ final class AppTheme {
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
   );
 
-  static final ThemeData dark = FlexThemeData.dark(
-    scheme: FlexScheme.indigoM3,
+  static ThemeData dark = FlexThemeData.dark(
+    scheme: FlexScheme.redM3,
     subThemesData: const FlexSubThemesData(
       interactionEffects: true,
       tintedDisabledControls: true,
       blendOnColors: true,
       useM2StyleDividerInM3: true,
-      defaultRadius: AppDimens.defaultBorderRadius,
-      inputDecoratorIsFilled: true,
-      inputDecoratorBorderType: FlexInputBorderType.outline,
+      defaultRadius: 8.0,
+      fabUseShape: true,
+      fabAlwaysCircular: true,
       alignedDropdown: true,
+      appBarCenterTitle: true,
       navigationRailUseIndicator: true,
       navigationRailLabelType: NavigationRailLabelType.all,
     ),

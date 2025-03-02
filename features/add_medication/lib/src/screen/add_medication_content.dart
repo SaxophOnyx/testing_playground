@@ -13,11 +13,9 @@ class AddMedicationContent extends StatelessWidget {
     final AddMedicationBloc bloc = context.read<AddMedicationBloc>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('New Medication'),
-      ),
+      appBar: AppBar(title: const Text('New Medication')),
       body: Padding(
-        padding: const EdgeInsets.all(AppDimens.defaultPagePadding),
+        padding: const EdgeInsets.all(AppDimens.pagePaddingLarge),
         child: BlocBuilder<AddMedicationBloc, AddMedicationState>(
           builder: (BuildContext context, AddMedicationState state) {
             return Column(
@@ -34,7 +32,7 @@ class AddMedicationContent extends StatelessWidget {
                     errorText: state.nameError,
                   ),
                 ),
-                const SizedBox(height: AppDimens.defaultPagePadding),
+                const SizedBox(height: AppDimens.pageGap),
                 TextField(
                   onChanged: (String text) => bloc.add(UpdateInput(quantity: text)),
                   keyboardType: TextInputType.number,
@@ -46,7 +44,7 @@ class AddMedicationContent extends StatelessWidget {
                     errorText: state.quantityError,
                   ),
                 ),
-                const SizedBox(height: AppDimens.defaultPagePadding),
+                const SizedBox(height: AppDimens.pageGap),
                 TextField(
                   onChanged: (String text) => bloc.add(UpdateInput(expiresAt: text)),
                   enableInteractiveSelection: false,
@@ -66,7 +64,7 @@ class AddMedicationContent extends StatelessWidget {
                   onPressed: state.hasError ? null : () => bloc.add(const SubmitInput()),
                   child: const Text('Add medication'),
                 ),
-                const SizedBox(height: AppDimens.defaultPagePadding),
+                const SizedBox(height: AppDimens.pagePaddingLarge),
               ],
             );
           },

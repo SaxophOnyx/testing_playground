@@ -8,6 +8,6 @@ final class Initialize extends MedicationsEvent {
   const Initialize();
 }
 
-class AddMedication extends MedicationsEvent {
+final class AddMedication extends MedicationsEvent {
   const AddMedication();
 }

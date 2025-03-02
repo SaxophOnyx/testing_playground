@@ -1,6 +1,9 @@
 final class AppDimens {
   const AppDimens._();
 
-  static const double defaultBorderRadius = 12;
-  static const double defaultPagePadding = 20;
+  static const double pagePaddingSmall = 8;
+  static const double pagePaddingLarge = 24;
+  static const double pageGap = 8;
+  static const double widgetPadding = 10;
+  static const double knobSizeLarge = 16;
 }
