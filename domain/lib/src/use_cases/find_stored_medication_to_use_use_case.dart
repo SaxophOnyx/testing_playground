@@ -22,21 +22,22 @@ final class FindStoredMedicationToUseUseCase
 
   @override
   Future<StoredMedication?> execute(FindStoredMedicationToUsePayload payload) async {
-    final Medication medication = await _medicationRepository.fetchMedication(
+    final Medication? medication = await _medicationRepository.searchMedication(
       name: payload.medicationName,
-      createIfNotFound: false,
     );
 
-    final List<StoredMedication> stored = await _medicationRepository.fetchStoredMedications(
-      medicationId: medication.id,
-      minQuantity: payload.quantity,
-      minExpirationDate: payload.usageDateTime,
-    );
-
-    if (stored.isNotEmpty) {
-      return stored.reduce(
-        (StoredMedication a, StoredMedication b) => a.expiresAt.isBefore(b.expiresAt) ? a : b,
+    if (medication != null) {
+      final List<StoredMedication> stored = await _medicationRepository.fetchStoredMedications(
+        medicationId: medication.id,
+        minQuantity: payload.quantity,
+        minExpirationDate: payload.usageDateTime,
       );
+
+      if (stored.isNotEmpty) {
+        return stored.reduce(
+          (StoredMedication a, StoredMedication b) => a.expiresAt.isBefore(b.expiresAt) ? a : b,
+        );
+      }
     }
 
     return null;

@@ -9,10 +9,9 @@ abstract interface class MedicationRepository {
     int? minQuantity,
   });
 
-  Future<Medication> fetchMedication({
-    required String name,
-    required bool createIfNotFound,
-  });
+  Future<Medication> fetchOrCreateMedication({required String name});
+
+  Future<Medication?> searchMedication({required String name});
 
   Future<StoredMedication> addStoredMedication({
     required int medicationId,

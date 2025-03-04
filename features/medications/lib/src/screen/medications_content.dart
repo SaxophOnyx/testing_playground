@@ -70,7 +70,8 @@ class MedicationsContent extends StatelessWidget {
                   child: const Icon(Icons.add),
                 ),
                 Visibility(
-                  visible: state.storedMedications.isNotEmpty,
+                  // visible: state.storedMedications.isNotEmpty,
+                  visible: true,
                   child: Padding(
                     padding: const EdgeInsets.only(top: AppDimens.pageGap),
                     child: FloatingActionButton(

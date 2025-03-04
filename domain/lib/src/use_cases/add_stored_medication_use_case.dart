@@ -32,9 +32,8 @@ final class AddStoredMedicationUseCase
 
   @override
   Future<AddStoredMedicationResult> execute(AddStoredMedicationPayload payload) async {
-    final Medication medication = await _medicationRepository.fetchMedication(
+    final Medication medication = await _medicationRepository.fetchOrCreateMedication(
       name: payload.medicationName,
-      createIfNotFound: true,
     );
 
     final StoredMedication storedMedication = await _medicationRepository.addStoredMedication(

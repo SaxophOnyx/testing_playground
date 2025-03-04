@@ -74,19 +74,32 @@ final class MedicationRepositoryImpl implements MedicationRepository {
   }
 
   @override
-  Future<Medication> fetchMedication({
-    required String name,
-    bool createIfNotFound = false,
-  }) async {
+  Future<Medication> fetchOrCreateMedication({required String name}) async {
     final int id = await _appDatabase.into(_appDatabase.medicationTable).insert(
           MedicationTableCompanion.insert(name: name),
-          mode: createIfNotFound ? InsertMode.insertOrIgnore : InsertMode.insertOrAbort,
+          mode: InsertMode.insertOrIgnore,
         );
 
     return Medication(
       id: id,
       name: name,
     );
+  }
+
+  @override
+  Future<Medication?> searchMedication({required String name}) async {
+    final MedicationTableData? entity = await (_appDatabase.select(_appDatabase.medicationTable)
+          ..where(($MedicationTableTable row) => row.name.equals(name)))
+        .getSingleOrNull();
+
+    if (entity != null) {
+      return Medication(
+        id: entity.id,
+        name: entity.name,
+      );
+    }
+
+    return null;
   }
 
   @override

@@ -82,5 +82,7 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
   Future<void> _onUseMedication(
     UseMedication event,
     Emitter<MedicationsState> emit,
-  ) async {}
+  ) async {
+    await _appRouter.push(const UseMedicationRoute());
+  }
 }

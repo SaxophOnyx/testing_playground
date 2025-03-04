@@ -12,6 +12,8 @@ extension LocaleObserver on String {
     context.locale;
     return this.tr(args: args, namedArgs: namedArgs, gender: gender);
   }
+
+  String? get nullIfEmpty => isEmpty ? null : this;
 }
 
 extension ListExtension<T> on List<T> {
