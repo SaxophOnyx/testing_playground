@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../bloc/use_medication_bloc.dart';
+import '../widgets/medication_search_result.dart';
 
 class UseMedicationContent extends StatelessWidget {
   const UseMedicationContent({super.key});
@@ -12,49 +13,56 @@ class UseMedicationContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final UseMedicationBloc bloc = context.read<UseMedicationBloc>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Use Medication')),
-      body: Padding(
-        padding: const EdgeInsets.all(AppDimens.pagePaddingLarge),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimens.pagePadding),
         child: BlocBuilder<UseMedicationBloc, UseMedicationState>(
           builder: (BuildContext context, UseMedicationState state) {
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                TextField(
-                  onChanged: (String text) => bloc.add(UpdateInput(medicationName: text)),
-                  keyboardType: TextInputType.name,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextField(
+                      onChanged: (String text) => bloc.add(UpdateInput(medicationName: text)),
+                      keyboardType: TextInputType.name,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.singleLineFormatter,
+                      ],
+                      decoration: InputDecoration(
+                        labelText: 'Medication Name',
+                        errorText: state.medicationNameError.nullIfEmpty,
+                      ),
+                    ),
+                    const SizedBox(height: AppDimens.widgetSeparatorMedium),
+                    TextField(
+                      onChanged: (String text) {
+                        final int quantity = int.tryParse(text) ?? -1;
+                        bloc.add(UpdateInput(quantity: quantity));
+                      },
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      decoration: InputDecoration(
+                        labelText: 'Quantity',
+                        errorText: state.quantityError.nullIfEmpty,
+                      ),
+                    ),
                   ],
-                  decoration: InputDecoration(
-                    labelText: 'Medication Name',
-                    errorText: state.medicationNameError.nullIfEmpty,
-                  ),
                 ),
-                const SizedBox(height: AppDimens.pageGap),
-                TextField(
-                  onChanged: (String text) {
-                    final int quantity = int.tryParse(text) ?? -1;
-                    bloc.add(UpdateInput(quantity: quantity));
-                  },
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: InputDecoration(
-                    labelText: 'Quantity',
-                    errorText: state.quantityError.nullIfEmpty,
-                  ),
+                const SizedBox(height: AppDimens.widgetSeparatorMedium),
+                MedicationSearchResult(
+                  didSearchForMedication: state.didSearchForMedication,
+                  medication: state.storedMedication,
                 ),
-                const Spacer(),
+                const SizedBox(height: AppDimens.bottomSheetButtonSeparator),
                 FilledButton(
-                  onPressed: state.canSearchMedication
-                      ? () => bloc.add(const SearchForMedication())
-                      : null,
-                  child: const Text('Search for medication'),
+                  onPressed: () => bloc.add(const SearchForMedication()),
+                  child: const Text('Search for a medication'),
                 ),
-                const SizedBox(height: AppDimens.pagePaddingLarge),
+                const SizedBox(height: AppDimens.pagePadding),
               ],
             );
           },

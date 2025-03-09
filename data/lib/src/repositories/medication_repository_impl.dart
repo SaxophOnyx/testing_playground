@@ -121,7 +121,7 @@ final class MedicationRepositoryImpl implements MedicationRepository {
 
     if (minExpirationDate != null) {
       query.where(
-          ($StoredMedicationTableTable t) => t.expiresAt.isSmallerOrEqualValue(minExpirationDate));
+          ($StoredMedicationTableTable t) => t.expiresAt.isBiggerOrEqualValue(minExpirationDate));
     }
 
     query.orderBy(<OrderClauseGenerator<$StoredMedicationTableTable>>[

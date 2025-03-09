@@ -8,19 +8,22 @@ final class AppTheme {
   const AppTheme._();
 
   static ThemeData light = FlexThemeData.light(
-    scheme: FlexScheme.redM3,
+    scheme: FlexScheme.green,
     subThemesData: const FlexSubThemesData(
       interactionEffects: true,
       tintedDisabledControls: true,
       useM2StyleDividerInM3: true,
-      defaultRadius: 8.0,
+      inputDecoratorIsFilled: true,
       fabUseShape: true,
       fabAlwaysCircular: true,
+      cardRadius: 4.0,
       alignedDropdown: true,
-      appBarBackgroundSchemeColor: SchemeColor.primary,
       appBarCenterTitle: true,
+      bottomSheetRadius: 4.0,
       navigationRailUseIndicator: true,
       navigationRailLabelType: NavigationRailLabelType.all,
+      buttonMinSize: Size(0, 48),
+      filledButtonRadius: 4,
     ),
     fontFamily: AppFonts.montserrat.fontFamily,
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
@@ -28,19 +31,22 @@ final class AppTheme {
   );
 
   static ThemeData dark = FlexThemeData.dark(
-    scheme: FlexScheme.redM3,
+    scheme: FlexScheme.green,
     subThemesData: const FlexSubThemesData(
       interactionEffects: true,
       tintedDisabledControls: true,
-      blendOnColors: true,
       useM2StyleDividerInM3: true,
-      defaultRadius: 8.0,
+      inputDecoratorIsFilled: true,
       fabUseShape: true,
       fabAlwaysCircular: true,
+      cardRadius: 4.0,
       alignedDropdown: true,
       appBarCenterTitle: true,
+      bottomSheetRadius: 4.0,
       navigationRailUseIndicator: true,
       navigationRailLabelType: NavigationRailLabelType.all,
+      buttonMinSize: Size(0, 48),
+      filledButtonRadius: 4,
     ),
     fontFamily: AppFonts.montserrat.fontFamily,
     visualDensity: FlexColorScheme.comfortablePlatformDensity,

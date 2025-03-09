@@ -1,17 +1,5 @@
 import '../../domain.dart';
 
-final class FindStoredMedicationToUsePayload {
-  final String medicationName;
-  final int quantity;
-  final DateTime usageDateTime;
-
-  const FindStoredMedicationToUsePayload({
-    required this.medicationName,
-    required this.quantity,
-    required this.usageDateTime,
-  });
-}
-
 final class FindStoredMedicationToUseUseCase
     implements FutureUseCase<FindStoredMedicationToUsePayload, StoredMedication?> {
   final MedicationRepository _medicationRepository;

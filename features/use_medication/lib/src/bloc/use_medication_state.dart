@@ -2,52 +2,55 @@ part of 'use_medication_bloc.dart';
 
 class UseMedicationState {
   final String medicationName;
-  final String medicationNameError;
   final int quantity;
-  final String quantityError;
-  final String error;
-  final bool didFindNothing;
-  final int foundMedicationId;
+  final StoredMedication? storedMedication;
 
-  bool get canSearchMedication =>
-      medicationNameError.isEmpty && quantityError.isEmpty && !didFindNothing;
+  final bool didSearchForMedication;
+
+  final String medicationNameError;
+  final String quantityError;
+  final String operationError;
+
+  bool get hasInputError => !(medicationNameError.isEmpty && quantityError.isEmpty);
+
+  bool get canSearchMedication => !(hasInputError || didSearchForMedication);
 
   const UseMedicationState({
     required this.medicationName,
-    required this.medicationNameError,
     required this.quantity,
+    required this.storedMedication,
+    required this.didSearchForMedication,
+    required this.medicationNameError,
     required this.quantityError,
-    required this.error,
-    required this.didFindNothing,
-    required this.foundMedicationId,
+    required this.operationError,
   });
 
   const UseMedicationState.initial()
       : medicationName = '',
-        medicationNameError = '',
         quantity = -1,
+        storedMedication = null,
+        didSearchForMedication = false,
+        medicationNameError = '',
         quantityError = '',
-        error = '',
-        didFindNothing = false,
-        foundMedicationId = -1;
+        operationError = '';
 
   UseMedicationState copyWith({
     String? medicationName,
-    String? medicationNameError,
     int? quantity,
+    StoredMedication? Function()? storedMedication,
+    bool? didSearchForMedication,
+    String? medicationNameError,
     String? quantityError,
-    String? error,
-    bool? didFindNothing,
-    int? foundMedicationId,
+    String? operationError,
   }) {
     return UseMedicationState(
       medicationName: medicationName ?? this.medicationName,
       quantity: quantity ?? this.quantity,
-      didFindNothing: didFindNothing ?? this.didFindNothing,
+      storedMedication: storedMedication != null ? storedMedication.call() : this.storedMedication,
+      didSearchForMedication: didSearchForMedication ?? this.didSearchForMedication,
       medicationNameError: medicationNameError ?? this.medicationNameError,
       quantityError: quantityError ?? this.quantityError,
-      error: error ?? this.error,
-      foundMedicationId: foundMedicationId ?? this.foundMedicationId,
+      operationError: operationError ?? this.operationError,
     );
   }
 }

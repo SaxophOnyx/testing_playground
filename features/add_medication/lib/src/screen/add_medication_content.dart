@@ -12,14 +12,13 @@ class AddMedicationContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final AddMedicationBloc bloc = context.read<AddMedicationBloc>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('New Medication')),
-      body: Padding(
-        padding: const EdgeInsets.all(AppDimens.pagePaddingLarge),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(AppDimens.pagePadding),
         child: BlocBuilder<AddMedicationBloc, AddMedicationState>(
           builder: (BuildContext context, AddMedicationState state) {
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 TextField(
                   onChanged: (String text) => bloc.add(UpdateInput(name: text)),
@@ -28,11 +27,11 @@ class AddMedicationContent extends StatelessWidget {
                     FilteringTextInputFormatter.singleLineFormatter,
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Name',
-                    errorText: state.nameError,
+                    labelText: 'Medication name',
+                    errorText: state.nameError.nullIfEmpty,
                   ),
                 ),
-                const SizedBox(height: AppDimens.pageGap),
+                const SizedBox(height: AppDimens.widgetSeparatorMedium),
                 TextField(
                   onChanged: (String text) => bloc.add(UpdateInput(quantity: text)),
                   keyboardType: TextInputType.number,
@@ -40,11 +39,11 @@ class AddMedicationContent extends StatelessWidget {
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Quantity',
-                    errorText: state.quantityError,
+                    labelText: 'Initial quantity',
+                    errorText: state.quantityError.nullIfEmpty,
                   ),
                 ),
-                const SizedBox(height: AppDimens.pageGap),
+                const SizedBox(height: AppDimens.widgetSeparatorMedium),
                 TextField(
                   onChanged: (String text) => bloc.add(UpdateInput(expiresAt: text)),
                   enableInteractiveSelection: false,
@@ -54,17 +53,17 @@ class AddMedicationContent extends StatelessWidget {
                     DateInputFormatter(),
                   ],
                   decoration: InputDecoration(
-                    labelText: 'Expires at',
+                    labelText: 'Expiration date (DD/MM/YYYY)',
                     hintText: '--/--/----',
-                    errorText: state.expiresAtError,
+                    errorText: state.expiresAtError.nullIfEmpty,
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(height: AppDimens.bottomSheetButtonSeparator),
                 FilledButton(
-                  onPressed: state.hasError ? null : () => bloc.add(const SubmitInput()),
-                  child: const Text('Add medication'),
+                  onPressed: () => bloc.add(const SubmitInput()),
+                  child: const Text('Add new medication'),
                 ),
-                const SizedBox(height: AppDimens.pagePaddingLarge),
+                const SizedBox(height: AppDimens.pagePadding),
               ],
             );
           },

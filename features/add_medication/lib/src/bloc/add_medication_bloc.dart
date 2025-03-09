@@ -23,9 +23,9 @@ class AddMedicationBloc extends Bloc<AddMedicationEvent, AddMedicationState> {
     UpdateInput event,
     Emitter<AddMedicationState> emit,
   ) {
-    final String? nameError = event.name != null ? null : state.nameError;
-    final String? quantityError = event.quantity != null ? null : state.quantityError;
-    final String? expiresAtError = event.expiresAt != null ? null : state.expiresAtError;
+    final String nameError = event.name != null ? '' : state.nameError;
+    final String quantityError = event.quantity != null ? '' : state.quantityError;
+    final String expiresAtError = event.expiresAt != null ? '' : state.expiresAtError;
 
     emit(
       state.copyWith(
@@ -35,7 +35,7 @@ class AddMedicationBloc extends Bloc<AddMedicationEvent, AddMedicationState> {
         quantityError: quantityError,
         expiresAt: event.expiresAt,
         expiresAtError: expiresAtError,
-        forceUpdate: true,
+        operationError: '',
       ),
     );
   }
@@ -47,20 +47,20 @@ class AddMedicationBloc extends Bloc<AddMedicationEvent, AddMedicationState> {
     final int? quantity = int.tryParse(state.quantity);
     final DateTime? expiresAt = DateFormat('dd/MM/yyyy').tryParse(state.expiresAt);
 
-    final String? nameError = ValidationService.validateName(state.name);
-    final String? quantityError = quantity != null ? null : 'Invalid quantity';
-    final String? expiresAtError = ValidationService.validateDate(expiresAt);
+    final String nameError = ValidationService.validateName(state.name);
+    final String quantityError = ValidationService.validateQuantity(quantity);
+    final String expiresAtError = ValidationService.validateDate(expiresAt);
 
     emit(
       state.copyWith(
         nameError: nameError,
         quantityError: quantityError,
         expiresAtError: expiresAtError,
-        forceUpdate: true,
+        operationError: '',
       ),
     );
 
-    if (!state.hasError) {
+    if (!state.hasInputError) {
       try {
         final AddStoredMedicationResult medication = await _addStoredMedicationUseCase.execute(
           AddStoredMedicationPayload(
@@ -72,7 +72,9 @@ class AddMedicationBloc extends Bloc<AddMedicationEvent, AddMedicationState> {
 
         await _appRouter.maybePop(medication);
       } catch (_) {
-        // TODO(SaxophOnyx): Handle error
+        emit(
+          state.copyWith(operationError: 'Error while adding medication'),
+        );
       }
     }
   }

@@ -4,32 +4,32 @@ final class MedicationsState {
   final Map<int, Medication> medications;
   final List<StoredMedication> storedMedications;
   final bool isLoading;
-  final bool hasError;
+  final String error;
 
   const MedicationsState({
     required this.medications,
     required this.storedMedications,
     required this.isLoading,
-    required this.hasError,
+    required this.error,
   });
 
   const MedicationsState.initial()
       : medications = const <int, Medication>{},
         storedMedications = const <StoredMedication>[],
         isLoading = true,
-        hasError = false;
+        error = '';
 
   MedicationsState copyWith({
     Map<int, Medication>? medications,
     List<StoredMedication>? storedMedications,
     bool? isLoading,
-    bool? hasError,
+    String? hasError,
   }) {
     return MedicationsState(
       medications: medications ?? this.medications,
       storedMedications: storedMedications ?? this.storedMedications,
       isLoading: isLoading ?? this.isLoading,
-      hasError: hasError ?? this.hasError,
+      error: hasError ?? this.error,
     );
   }
 }

@@ -10,13 +10,11 @@ class AppRouter extends RootStackRouter {
         ),
         CustomRoute<void>(
           page: AddMedicationRoute.page,
-          durationInMilliseconds: 250,
-          transitionsBuilder: TransitionsBuilders.slideLeft,
+          customRouteBuilder: AppRouterBuilders.scrollableBottomSheet,
         ),
         CustomRoute<void>(
           page: UseMedicationRoute.page,
-          durationInMilliseconds: 250,
-          transitionsBuilder: TransitionsBuilders.slideLeft,
+          customRouteBuilder: AppRouterBuilders.scrollableBottomSheet,
         ),
       ];
 }

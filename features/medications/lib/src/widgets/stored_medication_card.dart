@@ -7,57 +7,58 @@ class StoredMedicationCard extends StatelessWidget {
   final int quantity;
   final DateTime expiresAt;
 
+  final void Function() onDeletePressed;
+
   const StoredMedicationCard({
     super.key,
     required this.name,
     required this.quantity,
     required this.expiresAt,
+    required this.onDeletePressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textThemes = Theme.of(context).textTheme;
+    final ThemeData theme = Theme.of(context);
+    final ColorScheme colors = theme.colorScheme;
+
+    final bool isExpired = expiresAt.isBefore(DateTime.now());
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimens.widgetPadding),
+      color: isExpired ? colors.errorContainer : null,
+      child: SizedBox(
+        height: AppDimens.cardMinHeight,
         child: Row(
           children: <Widget>[
-            const SizedBox(width: AppDimens.widgetPadding),
-            SizedBox.square(
-              dimension: AppDimens.knobSizeLarge,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: name.toColor(),
+            Container(
+              width: 5,
+              color: isExpired ? colors.error : Colors.greenAccent,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(AppDimens.cardPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      isExpired ? '$name (Expired)' : name,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: isExpired ? colors.error : null,
+                      ),
+                    ),
+                    Text(
+                      '$quantity unit(s) until ${DateTimeUtils.formatDate(expiresAt)}',
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(width: AppDimens.widgetPadding * 2),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    name,
-                    style: textThemes.titleMedium,
-                  ),
-                  Text(
-                    '$quantity unit(s) available',
-                    style: textThemes.bodyMedium,
-                  ),
-                  const SizedBox(height: AppDimens.widgetPadding),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      'Expires on ${DateFormat.yMMMMd().format(expiresAt)}',
-                      style: textThemes.labelLarge,
-                    ),
-                  ),
-                ],
-              ),
+            IconButton(
+              onPressed: onDeletePressed,
+              icon: const Icon(Icons.delete, color: Colors.grey),
             ),
+            const SizedBox(width: AppDimens.cardPadding),
           ],
         ),
       ),

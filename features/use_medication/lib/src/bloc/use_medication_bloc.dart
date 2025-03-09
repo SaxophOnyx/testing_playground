@@ -27,8 +27,8 @@ class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
     UpdateInput event,
     Emitter<UseMedicationState> emit,
   ) {
-    final String? nameError = event.medicationName != null ? '' : state.medicationNameError;
-    final String? quantityError = event.quantity != null ? '' : state.quantityError;
+    final String nameError = event.medicationName != null ? '' : state.medicationNameError;
+    final String quantityError = event.quantity != null ? '' : state.quantityError;
 
     emit(
       state.copyWith(
@@ -36,7 +36,9 @@ class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
         medicationNameError: nameError,
         quantity: event.quantity,
         quantityError: quantityError,
-        didFindNothing: false,
+        didSearchForMedication: false,
+        storedMedication: () => null,
+        operationError: '',
       ),
     );
   }
@@ -47,18 +49,19 @@ class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
   ) async {
     try {
       final String nameError = ValidationService.validateName(state.medicationName);
-      final String quantityError = state.quantity != -1 ? '' : 'Invalid quantity';
+      final String quantityError = ValidationService.validateQuantity(state.quantity);
 
       emit(
         state.copyWith(
           medicationNameError: nameError,
           quantityError: quantityError,
+          operationError: '',
         ),
       );
 
       if (state.canSearchMedication) {
         emit(
-          state.copyWith(foundMedicationId: -1),
+          state.copyWith(storedMedication: () => null),
         );
 
         final StoredMedication? foundMedication = await _findStoredMedicationToUseUseCase.execute(
@@ -71,13 +74,15 @@ class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
 
         emit(
           state.copyWith(
-            foundMedicationId: foundMedication?.id ?? -1,
-            didFindNothing: foundMedication == null,
+            storedMedication: () => foundMedication,
+            didSearchForMedication: foundMedication == null,
           ),
         );
       }
     } catch (_) {
-      // TODO(SaxophOnyx): Handle error
+      emit(
+        state.copyWith(operationError: 'Error while searching for medication'),
+      );
     }
   }
 
@@ -85,18 +90,26 @@ class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
     SubmitMedicationUsage event,
     Emitter<UseMedicationState> emit,
   ) async {
-    if (state.foundMedicationId != -1) {
+    final StoredMedication? storedMedication = state.storedMedication;
+
+    if (storedMedication != null) {
+      emit(
+        state.copyWith(operationError: ''),
+      );
+
       try {
         final StoredMedication updated = await _useStoredMedicationsUseCase.execute(
           UseStoredMedicationsPayload(
-            storedMedicationId: state.foundMedicationId,
+            storedMedicationId: storedMedication.id,
             quantity: state.quantity,
           ),
         );
 
         await _appRouter.maybePop(updated);
       } catch (_) {
-        // TODO(SaxophOnyx): Handle error
+        emit(
+          state.copyWith(operationError: 'Error while processing medication'),
+        );
       }
     }
   }

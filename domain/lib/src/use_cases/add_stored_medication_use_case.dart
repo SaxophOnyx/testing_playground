@@ -1,17 +1,5 @@
 import '../../domain.dart';
 
-final class AddStoredMedicationPayload {
-  final String medicationName;
-  final int quantity;
-  final DateTime expiresAt;
-
-  const AddStoredMedicationPayload({
-    required this.medicationName,
-    required this.quantity,
-    required this.expiresAt,
-  });
-}
-
 final class AddStoredMedicationResult {
   final Medication medication;
   final StoredMedication storedMedication;

@@ -21,6 +21,7 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
     on<Initialize>(_onInitialize);
     on<AddMedication>(_onAddMedication);
     on<UseMedication>(_onUseMedication);
+    on<DeleteMedication>(_onDeleteMedication);
   }
 
   Future<void> _onInitialize(
@@ -44,7 +45,7 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
     } catch (_) {
       emit(
         state.copyWith(
-          hasError: true,
+          hasError: 'Error while loading medications',
           isLoading: false,
         ),
       );
@@ -58,17 +59,20 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
     final AddStoredMedicationResult? result = await _appRouter.push(const AddMedicationRoute());
 
     if (result != null) {
-      final Map<int, Medication>? medications = state.medications.containsKey(result.medication.id)
+      final Medication medication = result.medication;
+
+      final Map<int, Medication>? medications = state.medications.containsKey(medication.id)
           ? null
-          : <int, Medication>{
-              ...state.medications,
-              result.medication.id: result.medication,
-            };
+          : <int, Medication>{...state.medications, medication.id: medication};
 
       final List<StoredMedication> storedMedications = <StoredMedication>[
         result.storedMedication,
         ...state.storedMedications,
-      ]..sort((StoredMedication a, StoredMedication b) => a.expiresAt.compareTo(b.expiresAt));
+      ];
+
+      storedMedications.sort(
+        (StoredMedication a, StoredMedication b) => a.expiresAt.compareTo(b.expiresAt),
+      );
 
       emit(
         state.copyWith(
@@ -83,6 +87,13 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
     UseMedication event,
     Emitter<MedicationsState> emit,
   ) async {
-    await _appRouter.push(const UseMedicationRoute());
+    final StoredMedication? updatedStored = await _appRouter.push<StoredMedication>(
+      const UseMedicationRoute(),
+    );
   }
+
+  Future<void> _onDeleteMedication(
+    DeleteMedication event,
+    Emitter<MedicationsState> emit,
+  ) async {}
 }

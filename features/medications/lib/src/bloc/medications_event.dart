@@ -15,3 +15,9 @@ final class AddMedication extends MedicationsEvent {
 final class UseMedication extends MedicationsEvent {
   const UseMedication();
 }
+
+class DeleteMedication extends MedicationsEvent {
+  final int index;
+
+  const DeleteMedication(this.index);
+}

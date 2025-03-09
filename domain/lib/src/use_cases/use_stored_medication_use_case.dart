@@ -1,15 +1,5 @@
 import '../../../domain.dart';
 
-final class UseStoredMedicationsPayload {
-  final int storedMedicationId;
-  final int quantity;
-
-  const UseStoredMedicationsPayload({
-    required this.storedMedicationId,
-    required this.quantity,
-  });
-}
-
 final class UseStoredMedicationsUseCase
     implements FutureUseCase<UseStoredMedicationsPayload, StoredMedication> {
   final MedicationRepository _medicationRepository;
