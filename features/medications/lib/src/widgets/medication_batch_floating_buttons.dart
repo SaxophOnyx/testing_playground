@@ -1,13 +1,13 @@
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 
-class StoredMedicationFloatingButtons extends StatelessWidget {
+class MedicationBatchFloatingButtons extends StatelessWidget {
   final bool isWidgetVisible;
   final bool isUseButtonVisible;
   final void Function() onAddMedication;
   final void Function() onUseMedication;
 
-  const StoredMedicationFloatingButtons({
+  const MedicationBatchFloatingButtons({
     super.key,
     required this.isWidgetVisible,
     required this.isUseButtonVisible,

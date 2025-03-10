@@ -7,16 +7,16 @@ part 'use_medication_state.dart';
 
 class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
   final AppRouter _appRouter;
-  final FindStoredMedicationToUseUseCase _findStoredMedicationToUseUseCase;
-  final UseStoredMedicationsUseCase _useStoredMedicationsUseCase;
+  final FindMedicationBatchToConsumeUseCase _findMedicationBatchToConsumeUseCase;
+  final ConsumeMedicationBatchUseCase _consumeMedicationBatchUseCase;
 
   UseMedicationBloc({
     required AppRouter appRouter,
-    required FindStoredMedicationToUseUseCase findStoredMedicationToUseUseCase,
-    required UseStoredMedicationsUseCase useStoredMedicationsUseCase,
+    required FindMedicationBatchToConsumeUseCase findMedicationBatchToConsumeUseCase,
+    required ConsumeMedicationBatchUseCase consumeMedicationBatchUseCase,
   })  : _appRouter = appRouter,
-        _findStoredMedicationToUseUseCase = findStoredMedicationToUseUseCase,
-        _useStoredMedicationsUseCase = useStoredMedicationsUseCase,
+        _findMedicationBatchToConsumeUseCase = findMedicationBatchToConsumeUseCase,
+        _consumeMedicationBatchUseCase = consumeMedicationBatchUseCase,
         super(const UseMedicationState.initial()) {
     on<UpdateInput>(_onUpdateInput);
     on<SearchForMedication>(_onSearchForMedication);
@@ -37,7 +37,7 @@ class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
         quantity: event.quantity,
         quantityError: quantityError,
         didSearchForMedication: false,
-        storedMedication: () => null,
+        batch: () => null,
         operationError: '',
       ),
     );
@@ -61,21 +61,21 @@ class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
 
       if (state.canSearchMedication) {
         emit(
-          state.copyWith(storedMedication: () => null),
+          state.copyWith(batch: () => null),
         );
 
-        final StoredMedication? foundMedication = await _findStoredMedicationToUseUseCase.execute(
-          FindStoredMedicationToUsePayload(
+        final MedicationBatch? batch = await _findMedicationBatchToConsumeUseCase.execute(
+          FindMedicationBatchToConsumePayload(
             medicationName: state.medicationName,
-            quantity: state.quantity,
+            quantityToConsume: state.quantity,
             usageDateTime: DateTime.now(),
           ),
         );
 
         emit(
           state.copyWith(
-            storedMedication: () => foundMedication,
-            didSearchForMedication: foundMedication == null,
+            batch: () => batch,
+            didSearchForMedication: batch == null,
           ),
         );
       }
@@ -90,18 +90,18 @@ class UseMedicationBloc extends Bloc<UseMedicationEvent, UseMedicationState> {
     SubmitMedicationUsage event,
     Emitter<UseMedicationState> emit,
   ) async {
-    final StoredMedication? storedMedication = state.storedMedication;
+    final MedicationBatch? batch = state.batch;
 
-    if (storedMedication != null) {
+    if (batch != null) {
       emit(
         state.copyWith(operationError: ''),
       );
 
       try {
-        final StoredMedication updated = await _useStoredMedicationsUseCase.execute(
-          UseStoredMedicationsPayload(
-            storedMedicationId: storedMedication.id,
-            quantity: state.quantity,
+        final MedicationBatch updated = await _consumeMedicationBatchUseCase.execute(
+          ConsumeMedicationBatchPayload(
+            batchId: batch.id,
+            quantityToConsume: state.quantity,
           ),
         );
 

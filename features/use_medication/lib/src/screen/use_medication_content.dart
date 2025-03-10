@@ -55,13 +55,21 @@ class UseMedicationContent extends StatelessWidget {
                 const SizedBox(height: AppDimens.widgetSeparatorMedium),
                 MedicationSearchResult(
                   didSearchForMedication: state.didSearchForMedication,
-                  medication: state.storedMedication,
+                  medication: state.batch,
                 ),
                 const SizedBox(height: AppDimens.bottomSheetButtonSeparator),
-                FilledButton(
-                  onPressed: () => bloc.add(const SearchForMedication()),
-                  child: const Text('Search for a medication'),
-                ),
+                if (state.batch == null)
+                  FilledButton(
+                    onPressed: state.canSearchMedication
+                        ? () => bloc.add(const SearchForMedication())
+                        : null,
+                    child: const Text('Search for a medication'),
+                  ),
+                if (state.batch != null)
+                  FilledButton(
+                    onPressed: () => bloc.add(const SubmitMedicationUsage()),
+                    child: const Text('Confirm medication usage'),
+                  ),
                 const SizedBox(height: AppDimens.pagePadding),
               ],
             );

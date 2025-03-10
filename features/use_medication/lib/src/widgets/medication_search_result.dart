@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class MedicationSearchResult extends StatelessWidget {
   final bool didSearchForMedication;
-  final StoredMedication? medication;
+  final MedicationBatch? medication;
 
   const MedicationSearchResult({
     super.key,
@@ -25,16 +25,16 @@ class MedicationSearchResult extends StatelessWidget {
           child: Center(
             child: Builder(
               builder: (BuildContext context) {
+                final MedicationBatch? maybeMedication = medication;
+
+                if (maybeMedication != null) {
+                  return Text(
+                    'Medication ${maybeMedication.id} is suitable',
+                    style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                  );
+                }
+
                 if (didSearchForMedication) {
-                  final StoredMedication? maybeMedication = medication;
-
-                  if (maybeMedication != null) {
-                    return Text(
-                      'Medication ${maybeMedication.id}',
-                      style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                    );
-                  }
-
                   return Text(
                     'No suitable medications found',
                     style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),

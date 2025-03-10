@@ -1,11 +1,11 @@
-class StoredMedication {
+class MedicationBatch {
   final int id;
   final int medicationId;
   final int quantity;
   final int initialQuantity;
   final DateTime expiresAt;
 
-  const StoredMedication({
+  const MedicationBatch({
     required this.id,
     required this.medicationId,
     required this.quantity,

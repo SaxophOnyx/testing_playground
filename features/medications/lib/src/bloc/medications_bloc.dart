@@ -8,15 +8,18 @@ part 'medications_state.dart';
 class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
   final AppRouter _appRouter;
   final FetchMedicationsUseCase _fetchMedicationsUseCase;
-  final FetchStoredMedicationsUseCase _fetchStoredMedicationsUseCase;
+  final FetchMedicationBatchesUseCase _fetchMedicationBatchesUseCase;
+  final DiscardMedicationBatchUseCase _discardMedicationBatchUseCase;
 
   MedicationsBloc({
     required AppRouter appRouter,
     required FetchMedicationsUseCase fetchMedicationsUseCase,
-    required FetchStoredMedicationsUseCase fetchStoredMedicationsUseCase,
+    required FetchMedicationBatchesUseCase fetchMedicationBatchesUseCase,
+    required DiscardMedicationBatchUseCase discardMedicationBatchUseCase,
   })  : _appRouter = appRouter,
         _fetchMedicationsUseCase = fetchMedicationsUseCase,
-        _fetchStoredMedicationsUseCase = fetchStoredMedicationsUseCase,
+        _fetchMedicationBatchesUseCase = fetchMedicationBatchesUseCase,
+        _discardMedicationBatchUseCase = discardMedicationBatchUseCase,
         super(const MedicationsState.initial()) {
     on<Initialize>(_onInitialize);
     on<AddMedication>(_onAddMedication);
@@ -30,7 +33,7 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
   ) async {
     try {
       final List<Medication> medications = await _fetchMedicationsUseCase.execute();
-      final List<StoredMedication> stored = await _fetchStoredMedicationsUseCase.execute();
+      final List<MedicationBatch> batches = await _fetchMedicationBatchesUseCase.execute();
 
       emit(
         state.copyWith(
@@ -38,14 +41,14 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
             key: (Medication item) => item.id,
             value: (Medication item) => item,
           ),
-          storedMedications: stored,
+          batches: batches,
           isLoading: false,
         ),
       );
     } catch (_) {
       emit(
         state.copyWith(
-          hasError: 'Error while loading medications',
+          error: 'Error while loading medications',
           isLoading: false,
         ),
       );
@@ -56,7 +59,7 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
     AddMedication event,
     Emitter<MedicationsState> emit,
   ) async {
-    final AddStoredMedicationResult? result = await _appRouter.push(const AddMedicationRoute());
+    final AddMedicationBatchResult? result = await _appRouter.push(const AddMedicationRoute());
 
     if (result != null) {
       final Medication medication = result.medication;
@@ -65,19 +68,19 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
           ? null
           : <int, Medication>{...state.medications, medication.id: medication};
 
-      final List<StoredMedication> storedMedications = <StoredMedication>[
-        result.storedMedication,
-        ...state.storedMedications,
+      final List<MedicationBatch> batches = <MedicationBatch>[
+        result.batch,
+        ...state.batches,
       ];
 
-      storedMedications.sort(
-        (StoredMedication a, StoredMedication b) => a.expiresAt.compareTo(b.expiresAt),
+      batches.sort(
+        (MedicationBatch a, MedicationBatch b) => a.expiresAt.compareTo(b.expiresAt),
       );
 
       emit(
         state.copyWith(
           medications: medications,
-          storedMedications: storedMedications,
+          batches: batches,
         ),
       );
     }
@@ -87,7 +90,7 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
     UseMedication event,
     Emitter<MedicationsState> emit,
   ) async {
-    final StoredMedication? updatedStored = await _appRouter.push<StoredMedication>(
+    final MedicationBatch? batch = await _appRouter.push<MedicationBatch>(
       const UseMedicationRoute(),
     );
   }

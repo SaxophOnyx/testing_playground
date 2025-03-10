@@ -15,8 +15,8 @@ class UseMedicationScreen extends StatelessWidget {
     return BlocProvider<UseMedicationBloc>(
       create: (_) => UseMedicationBloc(
         appRouter: appLocator<AppRouter>(),
-        findStoredMedicationToUseUseCase: appLocator<FindStoredMedicationToUseUseCase>(),
-        useStoredMedicationsUseCase: appLocator<UseStoredMedicationsUseCase>(),
+        findMedicationBatchToConsumeUseCase: appLocator<FindMedicationBatchToConsumeUseCase>(),
+        consumeMedicationBatchUseCase: appLocator<ConsumeMedicationBatchUseCase>(),
       ),
       child: const UseMedicationContent(),
     );

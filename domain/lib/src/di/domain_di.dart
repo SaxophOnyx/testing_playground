@@ -10,9 +10,10 @@ final class DomainDI {
   }
 
   static void _initUseCases(GetIt locator) {
-    locator.registerLazySingleton<AddStoredMedicationUseCase>(
-      () => AddStoredMedicationUseCase(
+    locator.registerLazySingleton<AddMedicationBatchUseCase>(
+      () => AddMedicationBatchUseCase(
         medicationRepository: locator<MedicationRepository>(),
+        medicationBatchRepository: locator<MedicationBatchRepository>(),
       ),
     );
 
@@ -22,27 +23,28 @@ final class DomainDI {
       ),
     );
 
-    locator.registerLazySingleton<FetchStoredMedicationsUseCase>(
-      () => FetchStoredMedicationsUseCase(
-        medicationRepository: locator<MedicationRepository>(),
+    locator.registerLazySingleton<FetchMedicationBatchesUseCase>(
+      () => FetchMedicationBatchesUseCase(
+        medicationBatchRepository: locator<MedicationBatchRepository>(),
       ),
     );
 
-    locator.registerLazySingleton<FindStoredMedicationToUseUseCase>(
-      () => FindStoredMedicationToUseUseCase(
+    locator.registerLazySingleton<FindMedicationBatchToConsumeUseCase>(
+      () => FindMedicationBatchToConsumeUseCase(
         medicationRepository: locator<MedicationRepository>(),
+        medicationBatchRepository: locator<MedicationBatchRepository>(),
       ),
     );
 
-    locator.registerLazySingleton<RemoveStoredMedicationUseCase>(
-      () => RemoveStoredMedicationUseCase(
-        medicationRepository: locator<MedicationRepository>(),
+    locator.registerLazySingleton<DiscardMedicationBatchUseCase>(
+      () => DiscardMedicationBatchUseCase(
+        medicationBatchRepository: locator<MedicationBatchRepository>(),
       ),
     );
 
-    locator.registerLazySingleton<UseStoredMedicationsUseCase>(
-      () => UseStoredMedicationsUseCase(
-        medicationRepository: locator<MedicationRepository>(),
+    locator.registerLazySingleton<ConsumeMedicationBatchUseCase>(
+      () => ConsumeMedicationBatchUseCase(
+        medicationBatchRepository: locator<MedicationBatchRepository>(),
       ),
     );
   }

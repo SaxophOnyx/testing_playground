@@ -16,7 +16,8 @@ class MedicationsScreen extends StatelessWidget {
       create: (_) => MedicationsBloc(
         appRouter: appLocator<AppRouter>(),
         fetchMedicationsUseCase: appLocator<FetchMedicationsUseCase>(),
-        fetchStoredMedicationsUseCase: appLocator<FetchStoredMedicationsUseCase>(),
+        fetchMedicationBatchesUseCase: appLocator<FetchMedicationBatchesUseCase>(),
+        discardMedicationBatchUseCase: appLocator<DiscardMedicationBatchUseCase>(),
       )..add(const Initialize()),
       child: const MedicationsContent(),
     );

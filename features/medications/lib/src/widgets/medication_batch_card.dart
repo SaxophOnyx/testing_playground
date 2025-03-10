@@ -2,16 +2,16 @@ import 'package:core/core.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:flutter/material.dart';
 
-class StoredMedicationCard extends StatelessWidget {
-  final String name;
+class MedicationBatchCard extends StatelessWidget {
+  final String medicationName;
   final int quantity;
   final DateTime expiresAt;
 
   final void Function() onDeletePressed;
 
-  const StoredMedicationCard({
+  const MedicationBatchCard({
     super.key,
-    required this.name,
+    required this.medicationName,
     required this.quantity,
     required this.expiresAt,
     required this.onDeletePressed,
@@ -41,7 +41,7 @@ class StoredMedicationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      isExpired ? '$name (Expired)' : name,
+                      isExpired ? '$medicationName (Expired)' : medicationName,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: isExpired ? colors.error : null,
                       ),

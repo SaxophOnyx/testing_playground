@@ -1,12 +1,12 @@
 import 'package:core/core.dart';
 import 'package:core_ui/core_ui.dart';
 import 'package:domain/src/models/medication.dart';
-import 'package:domain/src/models/stored_medication.dart';
+import 'package:domain/src/models/medication_batch.dart';
 import 'package:flutter/material.dart';
 
 import '../bloc/medications_bloc.dart';
-import '../widgets/stored_medication_card.dart';
-import '../widgets/stored_medication_floating_buttons.dart';
+import '../widgets/medication_batch_card.dart';
+import '../widgets/medication_batch_floating_buttons.dart';
 
 class MedicationsContent extends StatelessWidget {
   const MedicationsContent({super.key});
@@ -29,32 +29,32 @@ class MedicationsContent extends StatelessWidget {
                 return TextScreenPlaceholder(text: state.error);
               }
 
-              if (state.storedMedications.isEmpty) {
+              if (state.batches.isEmpty) {
                 return const TextScreenPlaceholder(
-                  text: 'No stored medication have been added yet',
+                  text: 'No medications have been added yet',
                 );
               }
 
               return ListView.builder(
                 padding: const EdgeInsets.all(AppDimens.pagePadding),
-                itemCount: state.storedMedications.length,
+                itemCount: state.batches.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final StoredMedication stored = state.storedMedications[index];
-                  final Medication medication = state.medications[stored.medicationId]!;
+                  final MedicationBatch batch = state.batches[index];
+                  final Medication medication = state.medications[batch.medicationId]!;
 
-                  return StoredMedicationCard(
-                    name: medication.name,
-                    quantity: stored.quantity,
-                    expiresAt: stored.expiresAt,
+                  return MedicationBatchCard(
+                    medicationName: medication.name,
+                    quantity: batch.quantity,
+                    expiresAt: batch.expiresAt,
                     onDeletePressed: () => bloc.add(DeleteMedication(index)),
                   );
                 },
               );
             },
           ),
-          floatingActionButton: StoredMedicationFloatingButtons(
+          floatingActionButton: MedicationBatchFloatingButtons(
             isWidgetVisible: !(state.isLoading || state.error.isNotEmpty),
-            isUseButtonVisible: state.storedMedications.isNotEmpty,
+            isUseButtonVisible: state.batches.isNotEmpty,
             onAddMedication: () => bloc.add(const AddMedication()),
             onUseMedication: () => bloc.add(const UseMedication()),
           ),

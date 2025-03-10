@@ -3,7 +3,7 @@ part of 'use_medication_bloc.dart';
 class UseMedicationState {
   final String medicationName;
   final int quantity;
-  final StoredMedication? storedMedication;
+  final MedicationBatch? batch;
 
   final bool didSearchForMedication;
 
@@ -18,7 +18,7 @@ class UseMedicationState {
   const UseMedicationState({
     required this.medicationName,
     required this.quantity,
-    required this.storedMedication,
+    required this.batch,
     required this.didSearchForMedication,
     required this.medicationNameError,
     required this.quantityError,
@@ -28,7 +28,7 @@ class UseMedicationState {
   const UseMedicationState.initial()
       : medicationName = '',
         quantity = -1,
-        storedMedication = null,
+        batch = null,
         didSearchForMedication = false,
         medicationNameError = '',
         quantityError = '',
@@ -37,7 +37,7 @@ class UseMedicationState {
   UseMedicationState copyWith({
     String? medicationName,
     int? quantity,
-    StoredMedication? Function()? storedMedication,
+    MedicationBatch? Function()? batch,
     bool? didSearchForMedication,
     String? medicationNameError,
     String? quantityError,
@@ -46,7 +46,7 @@ class UseMedicationState {
     return UseMedicationState(
       medicationName: medicationName ?? this.medicationName,
       quantity: quantity ?? this.quantity,
-      storedMedication: storedMedication != null ? storedMedication.call() : this.storedMedication,
+      batch: batch != null ? batch.call() : this.batch,
       didSearchForMedication: didSearchForMedication ?? this.didSearchForMedication,
       medicationNameError: medicationNameError ?? this.medicationNameError,
       quantityError: quantityError ?? this.quantityError,

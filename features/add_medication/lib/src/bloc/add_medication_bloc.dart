@@ -7,13 +7,13 @@ part 'add_medication_state.dart';
 
 class AddMedicationBloc extends Bloc<AddMedicationEvent, AddMedicationState> {
   final AppRouter _appRouter;
-  final AddStoredMedicationUseCase _addStoredMedicationUseCase;
+  final AddMedicationBatchUseCase _addMedicationBatchUseCase;
 
   AddMedicationBloc({
     required AppRouter appRouter,
-    required AddStoredMedicationUseCase addStoredMedicationUseCase,
+    required AddMedicationBatchUseCase addMedicationBatchUseCase,
   })  : _appRouter = appRouter,
-        _addStoredMedicationUseCase = addStoredMedicationUseCase,
+        _addMedicationBatchUseCase = addMedicationBatchUseCase,
         super(const AddMedicationState.initial()) {
     on<UpdateInput>(_onUpdateInput);
     on<SubmitInput>(_onSubmitInput);
@@ -62,15 +62,15 @@ class AddMedicationBloc extends Bloc<AddMedicationEvent, AddMedicationState> {
 
     if (!state.hasInputError) {
       try {
-        final AddStoredMedicationResult medication = await _addStoredMedicationUseCase.execute(
-          AddStoredMedicationPayload(
+        final AddMedicationBatchResult batch = await _addMedicationBatchUseCase.execute(
+          AddMedicationBatchPayload(
             medicationName: state.name,
             quantity: quantity!,
             expiresAt: expiresAt!,
           ),
         );
 
-        await _appRouter.maybePop(medication);
+        await _appRouter.maybePop(batch);
       } catch (_) {
         emit(
           state.copyWith(operationError: 'Error while adding medication'),

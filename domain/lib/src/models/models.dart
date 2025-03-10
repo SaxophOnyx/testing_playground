@@ -1,2 +1,2 @@
 export 'medication.dart';
-export 'stored_medication.dart';
+export 'medication_batch.dart';

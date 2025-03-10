@@ -2,34 +2,34 @@ part of 'medications_bloc.dart';
 
 final class MedicationsState {
   final Map<int, Medication> medications;
-  final List<StoredMedication> storedMedications;
+  final List<MedicationBatch> batches;
   final bool isLoading;
   final String error;
 
   const MedicationsState({
     required this.medications,
-    required this.storedMedications,
+    required this.batches,
     required this.isLoading,
     required this.error,
   });
 
   const MedicationsState.initial()
       : medications = const <int, Medication>{},
-        storedMedications = const <StoredMedication>[],
+        batches = const <MedicationBatch>[],
         isLoading = true,
         error = '';
 
   MedicationsState copyWith({
     Map<int, Medication>? medications,
-    List<StoredMedication>? storedMedications,
+    List<MedicationBatch>? batches,
     bool? isLoading,
-    String? hasError,
+    String? error,
   }) {
     return MedicationsState(
       medications: medications ?? this.medications,
-      storedMedications: storedMedications ?? this.storedMedications,
+      batches: batches ?? this.batches,
       isLoading: isLoading ?? this.isLoading,
-      error: hasError ?? this.error,
+      error: error ?? this.error,
     );
   }
 }
