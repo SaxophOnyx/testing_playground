@@ -35,12 +35,14 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
       final List<Medication> medications = await _fetchMedicationsUseCase.execute();
       final List<MedicationBatch> batches = await _fetchMedicationBatchesUseCase.execute();
 
+      final Map<int, Medication> mappedMedications = medications.toMap(
+        key: (Medication item) => item.id,
+        value: (Medication item) => item,
+      );
+
       emit(
         state.copyWith(
-          medications: medications.toMap(
-            key: (Medication item) => item.id,
-            value: (Medication item) => item,
-          ),
+          medications: mappedMedications,
           batches: batches,
           isLoading: false,
         ),
@@ -93,10 +95,55 @@ class MedicationsBloc extends Bloc<MedicationsEvent, MedicationsState> {
     final MedicationBatch? batch = await _appRouter.push<MedicationBatch>(
       const UseMedicationRoute(),
     );
+
+    if (batch != null) {
+      final int index = state.batches.indexWhere((MedicationBatch item) => item.id == batch.id);
+
+      if (index != -1) {
+        final bool isFullyConsumed = batch.quantity == 0;
+
+        final List<MedicationBatch> batches = isFullyConsumed
+            ? List<MedicationBatch>.generate(
+                state.batches.length - 1,
+                (int i) => i < index ? state.batches[i] : state.batches[i + 1],
+              )
+            : List<MedicationBatch>.generate(
+                state.batches.length,
+                (int i) => i != index ? state.batches[i] : batch,
+              );
+
+        emit(
+          state.copyWith(batches: batches),
+        );
+      }
+    }
   }
 
   Future<void> _onDeleteMedication(
     DeleteMedication event,
     Emitter<MedicationsState> emit,
-  ) async {}
+  ) async {
+    try {
+      final int index = event.index;
+
+      await _discardMedicationBatchUseCase.execute(
+        DiscardMedicationBatchPayload(batchId: state.batches[index].id),
+      );
+
+      final List<MedicationBatch> batches = List<MedicationBatch>.generate(
+        state.batches.length - 1,
+        (int i) => i < index ? state.batches[i] : state.batches[i + 1],
+      );
+
+      emit(
+        state.copyWith(batches: batches),
+      );
+    } catch (_) {
+      emit(
+        state.copyWith(
+          error: 'Error while discarding medication',
+        ),
+      );
+    }
+  }
 }
