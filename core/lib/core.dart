@@ -11,4 +11,4 @@ export 'src/events/events.dart';
 export 'src/exceptions/exceptions.dart';
 export 'src/localization/localization.dart';
 export 'src/services/services.dart';
-export 'src/utils/extensions.dart';
+export 'src/utils/utils.dart';

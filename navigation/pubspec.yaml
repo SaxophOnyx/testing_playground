@@ -14,12 +14,12 @@ dependencies:
   core_ui:
     path: ../core_ui
 
-  dashboard:
-    path: ../features/dashboard
-  character_list:
-    path: ../features/character_list
-  favorites:
-    path: ../features/favorites
+  medications:
+    path: ../features/medications
+  add_medication:
+    path: ../features/add_medication
+  use_medication:
+    path: ../features/use_medication
 
   auto_route: ^9.2.2
 

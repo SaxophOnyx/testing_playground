@@ -7,25 +7,25 @@ final class DataDI {
   const DataDI._();
 
   static void initDependencies(GetIt locator) {
-    _initApi(locator);
-    _initProviders(locator);
+    _initDatabase(locator);
     _initRepositories(locator);
   }
 
-  static void _initApi(GetIt locator) {
-    locator.registerLazySingleton<ApiProvider>(
-      () => ApiProvider(
-        dio: Dio(
-          BaseOptions(
-            baseUrl: locator<AppConfig>().baseUrl,
-          ),
-        ),
-        listResultField: ApiConstants.listResponseField,
+  static void _initDatabase(GetIt locator) {
+    locator.registerLazySingleton<AppDatabase>(AppDatabase.new);
+  }
+
+  static void _initRepositories(GetIt locator) {
+    locator.registerLazySingleton<MedicationRepository>(
+      () => MedicationRepositoryImpl(
+        appDatabase: locator<AppDatabase>(),
+      ),
+    );
+
+    locator.registerLazySingleton<MedicationBatchRepository>(
+      () => MedicationBatchRepositoryImpl(
+        appDatabase: locator<AppDatabase>(),
       ),
     );
   }
-
-  static void _initProviders(GetIt locator) {}
-
-  static void _initRepositories(GetIt locator) {}
 }
