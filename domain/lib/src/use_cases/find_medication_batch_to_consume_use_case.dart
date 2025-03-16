@@ -25,8 +25,9 @@ final class FindMedicationBatchToConsumeUseCase
 
   @override
   Future<MedicationBatch?> execute(FindMedicationBatchToConsumePayload payload) async {
-    final Medication? medication = await _medicationRepository.searchMedicationByName(
+    final Medication? medication = await _medicationRepository.retrieveMedicationByName(
       name: payload.medicationName,
+      createIfNotExist: false,
     );
 
     if (medication != null) {

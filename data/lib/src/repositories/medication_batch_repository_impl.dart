@@ -4,28 +4,32 @@ import 'package:domain/domain.dart';
 import '../../data.dart';
 
 final class MedicationBatchRepositoryImpl implements MedicationBatchRepository {
-  final AppDatabase _appDatabase;
+  final MedicationBatchProvider _batchProvider;
 
   const MedicationBatchRepositoryImpl({
-    required AppDatabase appDatabase,
-  }) : _appDatabase = appDatabase;
+    required MedicationBatchProvider batchProvider,
+  }) : _batchProvider = batchProvider;
 
   @override
   Future<MedicationBatch> consumeMedication({
     required int batchId,
     required int quantityToConsume,
   }) async {
-    await _appDatabase.consumeMedication(
+    await _batchProvider.consumeMedication(
       batchId: batchId,
       quantityToConsume: quantityToConsume,
     );
 
-    final MedicationBatchTableData entity = await _appDatabase.fetchMedicationBatch(
+    final MedicationBatchTableData? entity = await _batchProvider.fetchMedicationBatch(
       batchId: batchId,
     );
 
+    if (entity == null) {
+      throw const AppException.unknown();
+    }
+
     if (entity.quantity == 0) {
-      await _appDatabase.deleteMedicationBatch(batchId: batchId);
+      await _batchProvider.deleteMedicationBatch(batchId: batchId);
     }
 
     return MedicationBatchMapper.fromEntity(entity);
@@ -37,7 +41,7 @@ final class MedicationBatchRepositoryImpl implements MedicationBatchRepository {
     required int quantity,
     required DateTime expiresAt,
   }) async {
-    final MedicationBatchTableData entity = await _appDatabase.createMedicationBatch(
+    final MedicationBatchTableData entity = await _batchProvider.createMedicationBatch(
       medicationId: medicationId,
       quantity: quantity,
       expiresAt: expiresAt,
@@ -48,7 +52,7 @@ final class MedicationBatchRepositoryImpl implements MedicationBatchRepository {
 
   @override
   Future<void> deleteMedicationBatch({required int batchId}) {
-    return _appDatabase.deleteMedicationBatch(batchId: batchId);
+    return _batchProvider.deleteMedicationBatch(batchId: batchId);
   }
 
   @override
@@ -57,7 +61,7 @@ final class MedicationBatchRepositoryImpl implements MedicationBatchRepository {
     DateTime? minExpirationDate,
     int? minRemainingQuantity,
   }) async {
-    final List<MedicationBatchTableData> entities = await _appDatabase.fetchMedicationBatches(
+    final List<MedicationBatchTableData> entities = await _batchProvider.fetchMedicationBatches(
       medicationId: medicationId,
       minExpirationDate: minExpirationDate,
       minRemainingQuantity: minRemainingQuantity,
