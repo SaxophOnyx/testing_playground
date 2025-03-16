@@ -4,28 +4,35 @@ import 'package:domain/domain.dart';
 import '../../data.dart';
 
 final class MedicationRepositoryImpl implements MedicationRepository {
-  final AppDatabase _appDatabase;
+  final MedicationProvider _medicationProvider;
 
   const MedicationRepositoryImpl({
-    required AppDatabase appDatabase,
-  }) : _appDatabase = appDatabase;
+    required MedicationProvider medicationProvider,
+  }) : _medicationProvider = medicationProvider;
 
   @override
   Future<List<Medication>> fetchMedications() async {
-    final List<MedicationTableData> entities = await _appDatabase.fetchMedications();
-    return entities.mapList(MedicationMapper.fromEntity);
+    try {
+      final List<MedicationTableData> entities = await _medicationProvider.fetchMedications();
+      return entities.mapList(MedicationMapper.fromEntity);
+    } catch (_) {
+      throw const AppException.unknown();
+    }
   }
 
   @override
-  Future<Medication?> searchMedicationByName({
+  Future<Medication?> retrieveMedicationByName({
     required String name,
-    bool createIfNotExist = false,
+    required bool createIfNotExist,
   }) async {
-    final MedicationTableData? entity = await _appDatabase.searchMedicationByName(
-      name: name,
-      createIfNotExist: createIfNotExist,
-    );
+    try {
+      final MedicationTableData? entity = createIfNotExist
+          ? await _medicationProvider.searchOrCreateMedicationByName(name: name)
+          : await _medicationProvider.searchMedicationByName(name: name);
 
-    return entity != null ? MedicationMapper.fromEntity(entity) : null;
+      return entity != null ? MedicationMapper.fromEntity(entity) : null;
+    } catch (_) {
+      throw const AppException.unknown();
+    }
   }
 }

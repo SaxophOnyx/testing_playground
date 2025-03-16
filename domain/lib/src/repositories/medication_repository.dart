@@ -3,8 +3,8 @@ import '../../domain.dart';
 abstract interface class MedicationRepository {
   Future<List<Medication>> fetchMedications();
 
-  Future<Medication?> searchMedicationByName({
+  Future<Medication?> retrieveMedicationByName({
     required String name,
-    bool createIfNotExist = false,
+    required bool createIfNotExist,
   });
 }

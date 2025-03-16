@@ -8,6 +8,7 @@ final class DataDI {
 
   static void initDependencies(GetIt locator) {
     _initDatabase(locator);
+    _initProviders(locator);
     _initRepositories(locator);
   }
 
@@ -15,16 +16,30 @@ final class DataDI {
     locator.registerLazySingleton<AppDatabase>(AppDatabase.new);
   }
 
+  static void _initProviders(GetIt locator) {
+    locator.registerLazySingleton<MedicationProvider>(
+      () => MedicationProviderImpl(
+        appDatabase: locator<AppDatabase>(),
+      ),
+    );
+
+    locator.registerLazySingleton<MedicationBatchProvider>(
+      () => MedicationBatchProviderImpl(
+        appDatabase: locator<AppDatabase>(),
+      ),
+    );
+  }
+
   static void _initRepositories(GetIt locator) {
     locator.registerLazySingleton<MedicationRepository>(
       () => MedicationRepositoryImpl(
-        appDatabase: locator<AppDatabase>(),
+        medicationProvider: locator<MedicationProvider>(),
       ),
     );
 
     locator.registerLazySingleton<MedicationBatchRepository>(
       () => MedicationBatchRepositoryImpl(
-        appDatabase: locator<AppDatabase>(),
+        batchProvider: locator<MedicationBatchProvider>(),
       ),
     );
   }
