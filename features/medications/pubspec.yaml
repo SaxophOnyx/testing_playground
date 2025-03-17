@@ -24,5 +24,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  bloc_test: ^9.1.7
+  mocktail: ^1.0.4
+
   auto_route_generator: ^9.0.0
   build_runner: ^2.4.8
+
+flutter:
+  uses-material-design: true

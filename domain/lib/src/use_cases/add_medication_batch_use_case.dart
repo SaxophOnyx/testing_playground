@@ -24,7 +24,7 @@ final class AddMedicationBatchResult {
   });
 }
 
-final class AddMedicationBatchUseCase
+class AddMedicationBatchUseCase
     implements FutureUseCase<AddMedicationBatchPayload, AddMedicationBatchResult> {
   final MedicationRepository _medicationRepository;
   final MedicationBatchRepository _medicationBatchRepository;

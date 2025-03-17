@@ -1,6 +1,6 @@
 import '../../../domain.dart';
 
-final class FetchMedicationBatchesUseCase implements FutureUseCase<void, List<MedicationBatch>> {
+class FetchMedicationBatchesUseCase implements FutureUseCase<void, List<MedicationBatch>> {
   final MedicationBatchRepository _medicationBatchRepository;
 
   const FetchMedicationBatchesUseCase({
