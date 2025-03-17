@@ -1,5 +1,6 @@
 part of 'medications_bloc.dart';
 
+@immutable
 final class MedicationsState {
   final Map<int, Medication> medications;
   final List<MedicationBatch> batches;
@@ -31,5 +32,21 @@ final class MedicationsState {
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is MedicationsState &&
+        mapEquals(other.medications, medications) &&
+        listEquals(other.batches, batches) &&
+        other.isLoading == isLoading &&
+        other.error == error;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(medications, batches, isLoading, error);
   }
 }

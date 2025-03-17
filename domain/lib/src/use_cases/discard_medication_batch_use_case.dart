@@ -8,8 +8,7 @@ final class DiscardMedicationBatchPayload {
   });
 }
 
-final class DiscardMedicationBatchUseCase
-    implements FutureUseCase<DiscardMedicationBatchPayload, void> {
+class DiscardMedicationBatchUseCase implements FutureUseCase<DiscardMedicationBatchPayload, void> {
   final MedicationBatchRepository _medicationBatchRepository;
 
   const DiscardMedicationBatchUseCase({

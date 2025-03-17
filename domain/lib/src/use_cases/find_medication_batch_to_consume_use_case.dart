@@ -12,7 +12,7 @@ final class FindMedicationBatchToConsumePayload {
   });
 }
 
-final class FindMedicationBatchToConsumeUseCase
+class FindMedicationBatchToConsumeUseCase
     implements FutureUseCase<FindMedicationBatchToConsumePayload, MedicationBatch?> {
   final MedicationRepository _medicationRepository;
   final MedicationBatchRepository _medicationBatchRepository;
