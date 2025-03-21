@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/services/text_formatter.dart';
 
 import '../bloc/add_medication_bloc.dart';
+import '../keys/add_medication_keys.dart';
 
 class AddMedicationContent extends StatelessWidget {
   const AddMedicationContent({super.key});
@@ -21,6 +22,7 @@ class AddMedicationContent extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 TextField(
+                  key: AddMedicationKeys.nameTextField,
                   onChanged: (String text) => bloc.add(UpdateInput(name: text)),
                   keyboardType: TextInputType.name,
                   inputFormatters: <TextInputFormatter>[
@@ -33,6 +35,7 @@ class AddMedicationContent extends StatelessWidget {
                 ),
                 const SizedBox(height: AppDimens.widgetSeparatorMedium),
                 TextField(
+                  key: AddMedicationKeys.quantityTextField,
                   onChanged: (String text) => bloc.add(UpdateInput(quantity: text)),
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
@@ -45,6 +48,7 @@ class AddMedicationContent extends StatelessWidget {
                 ),
                 const SizedBox(height: AppDimens.widgetSeparatorMedium),
                 TextField(
+                  key: AddMedicationKeys.expiresAtTextField,
                   onChanged: (String text) => bloc.add(UpdateInput(expiresAt: text)),
                   enableInteractiveSelection: false,
                   keyboardType: TextInputType.datetime,
@@ -60,6 +64,7 @@ class AddMedicationContent extends StatelessWidget {
                 ),
                 const SizedBox(height: AppDimens.bottomSheetButtonSeparator),
                 FilledButton(
+                  key: AddMedicationKeys.submitButton,
                   onPressed: () => bloc.add(const SubmitInput()),
                   child: const Text('Add new medication'),
                 ),

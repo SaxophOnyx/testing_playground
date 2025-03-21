@@ -2,6 +2,7 @@ library use_medication;
 
 import 'package:navigation/navigation.dart';
 
+export 'src/keys/use_medication_keys.dart';
 export 'use_medication.gr.dart';
 
 @AutoRouterConfig()

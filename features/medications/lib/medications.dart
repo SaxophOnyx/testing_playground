@@ -3,6 +3,7 @@ library medications;
 import 'package:navigation/navigation.dart';
 
 export 'medications.gr.dart';
+export 'src/keys/medications_keys.dart';
 
 @AutoRouterConfig()
 // ignore: unused_element
