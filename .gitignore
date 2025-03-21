@@ -50,5 +50,6 @@ android/app/build
 **/*.graphql.dart
 **/*.gr.dart
 *.env
+integration_test/test_bundle.dart
 
 .vscode
