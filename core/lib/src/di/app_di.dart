@@ -12,17 +12,5 @@ final class AppDI {
     locator.registerSingleton<AppConfig>(
       AppConfig.fromFlavor(flavor),
     );
-
-    locator.registerLazySingleton<AppEventBus>(
-      AppEventBus.new,
-    );
-
-    locator.registerLazySingleton<AppEventNotifier>(
-      appLocator<AppEventBus>,
-    );
-
-    locator.registerLazySingleton<AppEventObserver>(
-      appLocator<AppEventBus>,
-    );
   }
 }
