@@ -38,4 +38,5 @@ The project includes several important scripts that must be executed:
 - If the necessary tools are not installed, Patrol may hang when calling `gradlew` instead of
   exiting with an error. For more information,
   see [Issue #2364](https://github.com/leancodepl/patrol/issues/2364).
-- There may be some issues with running integration tests on Android API 35 due to Patrol issues
+- You might encounter problems when running integration tests on Android API 35 due to issues with
+  Patrol.
