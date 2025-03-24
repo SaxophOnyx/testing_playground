@@ -1,0 +1,35 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+    desc "Build app bundle"
+    lane :build_appbundle do
+        sh("flutter build appbundle --release")
+    end
+
+    desc "Runs all the tests"
+    lane :run_all_tests do |options|
+        fail_fast = options[:fail_fast] ? "--fail-fast" : ""
+        sh("cd ../../; /bin/bash run_all_tests.sh #{fail_fast}")
+    end
+
+    desc "Deploy new version to testing"
+    lane :deploy do
+        run_all_tests(fail_fast: true)
+        build_appbundle
+    end
+end
