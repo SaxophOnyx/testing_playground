@@ -33,6 +33,8 @@ void main() {
       ),
     );
 
+    expect(false, true);
+
     expect(find.textContaining('Expired'), findsOneWidget);
   });
 

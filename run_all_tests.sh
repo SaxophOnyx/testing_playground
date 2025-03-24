@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if [[ "$1" == "--fail-fast" ]]; then
+    set -e
+    echo "Fail-fast mode enabled"
+fi
+
 cd "data"
 echo "Running tests for data"
 flutter test -r expanded
@@ -14,6 +20,3 @@ done
 cd ".."
 echo "Running integration tests"
 patrol test
-
-echo "Press Enter to exit..."
-read -r
